@@ -1,6 +1,7 @@
 import { VoiceProvider, VoiceProviderOptions } from './VoiceProvider';
 import { VoiceSessionState, VoiceTranscriptItem, VoiceToolExecution } from '../../types/office';
 import { ROBOT_PROFILES } from '../../data/robotProfiles';
+import { unlockIOSAudio } from './iosAudioHelper';
 
 export class BrowserRealtimeVoiceProvider implements VoiceProvider {
   private state: VoiceSessionState = 'idle';
@@ -56,6 +57,9 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
     if (options?.language) this.language = options.language;
     this.setState('connecting');
 
+    // Synchronously prime iOS AudioContext and SpeechSynthesis
+    unlockIOSAudio();
+
     try {
       // 1. Request microphone permission gracefully
       if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
@@ -71,6 +75,9 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
         if (AudioContextClass) {
           this.audioContext = new AudioContextClass();
+          if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+          }
           const source = this.audioContext.createMediaStreamSource(this.mediaStream);
           this.analyser = this.audioContext.createAnalyser();
           this.analyser.fftSize = 256;
@@ -83,7 +90,8 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
       const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
       if (SpeechRecognitionClass) {
         this.recognition = new SpeechRecognitionClass();
-        this.recognition.continuous = true;
+        const isIOS = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        this.recognition.continuous = !isIOS;
         this.recognition.interimResults = true;
         this.recognition.maxAlternatives = 1;
 
@@ -539,6 +547,10 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
     );
 
     // Cancel any ongoing utterance
+    unlockIOSAudio();
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
     window.speechSynthesis.cancel();
     this.setState('speaking');
 
@@ -554,7 +566,7 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
       if (voices && voices.length > 0) {
         const langPrefix = langCode.slice(0, 2);
         const naturalVoice =
-          voices.find((v) => v.lang.startsWith(langPrefix) && (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Paulina'))) ||
+          voices.find((v) => v.lang.startsWith(langPrefix) && (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Paulina') || v.name.includes('Diego'))) ||
           voices.find((v) => v.lang.startsWith(langPrefix));
         if (naturalVoice) utterance.voice = naturalVoice;
       }
@@ -584,10 +596,17 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
 
   private emitColleagueGreeting() {
     const profile = ROBOT_PROFILES[this.agentId] || ROBOT_PROFILES['vyra-growth'];
-    const greeting =
+    let greeting =
       this.language === 'en'
-        ? `Hey! ${profile.name} here. I'm listening. What are we working on?`
-        : `¡Hola! Aquí ${profile.name}. Te escucho, ¿qué revisamos hoy?`;
+        ? `Hey Alexis! ${profile.name} here. I'm listening. What are we working on?`
+        : `¡Hola Alexis! Aquí ${profile.name}. Te escucho, ¿qué revisamos hoy?`;
+
+    if (this.agentId === 'tradium-trading') {
+      greeting =
+        this.language === 'en'
+          ? "Hello Alexis. TRADIUM online. Hyperliquid equity is at $102,450 USDC. What trade shall we execute?"
+          : "Hola Alexis. TRADIUM en línea. Monitoreando Hyperliquid con $102,450 USDC en balance. ¿Qué orden ejecutamos?";
+    }
 
     this.speakResponse(greeting, this.language === 'en' ? 'en-US' : 'es-ES');
   }

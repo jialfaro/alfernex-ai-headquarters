@@ -1556,6 +1556,9 @@ export const useOfficeStore = create<OfficeStoreState>((set, get) => ({
   },
 
   sendVoiceText: async (text) => {
+    if (!activeVoiceProvider || !get().voiceSession.isActive) {
+      await get().startVoiceSession(get().selectedAgentId || 'tradium-trading');
+    }
     if (activeVoiceProvider) {
       await activeVoiceProvider.sendText(text);
     }

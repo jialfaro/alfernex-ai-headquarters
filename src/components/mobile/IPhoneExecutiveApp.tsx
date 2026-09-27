@@ -31,13 +31,17 @@ import {
   ChevronRight,
   Radio,
   BatteryCharging,
-  Brain
+  Brain,
+  Volume2,
+  Send,
+  X
 } from 'lucide-react';
 import { soundFX } from '../audio/soundEffects';
 import { ROBOT_PROFILES } from '../../data/robotProfiles';
 import { DEPARTMENT_LIST } from '../../data/departments';
 import { SHOPIFY_STORE_URL } from '../../data/shopifyData';
 import { DepartmentId } from '../../types/office';
+import { unlockIOSAudio, speakTextAloud } from '../../services/voice/iosAudioHelper';
 
 export const IPhoneExecutiveApp: React.FC = () => {
   // Store bindings
@@ -62,12 +66,20 @@ export const IPhoneExecutiveApp: React.FC = () => {
   const mobileTab = useOfficeStore((s) => s.mobileTab);
   const setMobileTab = useOfficeStore((s) => s.setMobileTab);
   const setIsMobileExecutiveView = useOfficeStore((s) => s.setIsMobileExecutiveView);
+  const chatMessages = useOfficeStore((s) => s.chatMessages);
+  const sendChatMessage = useOfficeStore((s) => s.sendChatMessage);
+  const sendVoiceText = useOfficeStore((s) => s.sendVoiceText);
 
   // Local state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDept, setSelectedDept] = useState<DepartmentId | 'all'>('all');
   const [dynamicIslandExpanded, setDynamicIslandExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
+  const [mobileChatAgentId, setMobileChatAgentId] = useState<string | null>(null);
+  const [mobileChatInput, setMobileChatInput] = useState('');
+  const [quickVoiceInput, setQuickVoiceInput] = useState('');
+  const [isDictatingMobileChat, setIsDictatingMobileChat] = useState(false);
+  const [isSendingMobileChat, setIsSendingMobileChat] = useState(false);
 
   // Clock
   useEffect(() => {
@@ -88,6 +100,8 @@ export const IPhoneExecutiveApp: React.FC = () => {
   }, []);
 
   const activeVoiceAgent = agents.find((a) => a.id === voiceSession.activeAgentId) || agents[0];
+  const mobileChatAgent = agents.find((a) => a.id === mobileChatAgentId);
+  const currentMobileMessages = (mobileChatAgentId && chatMessages[mobileChatAgentId]) || [];
 
   // Filtered agents
   const filteredAgents = agents.filter((ag) => {
@@ -100,6 +114,7 @@ export const IPhoneExecutiveApp: React.FC = () => {
   });
 
   const handleAgentVoice = (agentId: string) => {
+    unlockIOSAudio();
     selectAgent(agentId);
     startVoiceSession(agentId);
     setMobileTab('voice');
@@ -107,8 +122,9 @@ export const IPhoneExecutiveApp: React.FC = () => {
   };
 
   const handleAgentChat = (agentId: string) => {
+    unlockIOSAudio();
     selectAgent(agentId);
-    setChatModalOpen(true);
+    setMobileChatAgentId(agentId);
     soundFX.playClick(soundEnabled);
   };
 
@@ -116,6 +132,64 @@ export const IPhoneExecutiveApp: React.FC = () => {
     selectAgent(agentId);
     setAssignTaskModalOpen(true);
     soundFX.playClick(soundEnabled);
+  };
+
+  const handleSendMobileChat = async (textToSend?: string) => {
+    const text = (textToSend || mobileChatInput).trim();
+    if (!text || !mobileChatAgentId || isSendingMobileChat) return;
+    
+    unlockIOSAudio();
+    setMobileChatInput('');
+    setIsSendingMobileChat(true);
+    soundFX.playClick(soundEnabled);
+    try {
+      await sendChatMessage(mobileChatAgentId, text);
+      soundFX.playSuccess(soundEnabled);
+    } finally {
+      setIsSendingMobileChat(false);
+    }
+  };
+
+  const handleDictateMobileChat = () => {
+    if (typeof window === 'undefined') return;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setMobileChatInput('¿Cómo va la escala de ventas y el balance de hoy?');
+      return;
+    }
+
+    if (isDictatingMobileChat) {
+      setIsDictatingMobileChat(false);
+      return;
+    }
+
+    try {
+      unlockIOSAudio();
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-PE';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        setIsDictatingMobileChat(true);
+        soundFX.playClick(soundEnabled);
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setMobileChatInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        setIsDictatingMobileChat(false);
+      };
+
+      recognition.onerror = () => setIsDictatingMobileChat(false);
+      recognition.onend = () => setIsDictatingMobileChat(false);
+
+      recognition.start();
+    } catch {
+      setIsDictatingMobileChat(false);
+    }
   };
 
   return (
@@ -628,43 +702,155 @@ export const IPhoneExecutiveApp: React.FC = () => {
               </p>
             </div>
 
-            {/* Glowing Holographic Audio Orb */}
-            <div className="relative flex items-center justify-center my-6">
+            {/* Glowing Holographic Audio Orb (Tap to talk or interrupt) */}
+            <div className="relative flex flex-col items-center justify-center my-4">
               <div
+                onClick={() => {
+                  unlockIOSAudio();
+                  if (!voiceSession.isActive) {
+                    handleAgentVoice(activeVoiceAgent.id);
+                  } else if (voiceSession.state === 'speaking') {
+                    interruptVoice();
+                    soundFX.playClick(soundEnabled);
+                  }
+                }}
                 style={{
                   boxShadow: `0 0 70px ${activeVoiceAgent.color}60`,
                   borderColor: activeVoiceAgent.color
                 }}
-                className={`flex h-40 w-40 items-center justify-center rounded-full border-2 bg-gradient-to-br from-slate-950 via-[#0a1128] to-slate-950 transition-transform duration-300 ${
+                className={`cursor-pointer flex h-40 w-40 items-center justify-center rounded-full border-2 bg-gradient-to-br from-slate-950 via-[#0a1128] to-slate-950 transition-transform duration-300 hover:scale-105 active:scale-95 ${
                   voiceSession.state === 'speaking' ? 'scale-110 animate-pulse' : 'scale-100'
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <Mic className="h-10 w-10 text-cyan-300 animate-pulse" />
+                  <Mic className={`h-10 w-10 text-cyan-300 ${voiceSession.state === 'speaking' ? 'animate-bounce' : 'animate-pulse'}`} />
                   <span className="text-[9px] font-black font-mono tracking-widest text-white mt-2 uppercase">
-                    {voiceSession.state === 'speaking' ? 'HABLANDO' : voiceSession.isActive ? 'ESCUCHANDO' : 'LISTO'}
+                    {voiceSession.state === 'speaking' ? 'HABLANDO' : voiceSession.isActive ? 'ESCUCHANDO' : 'TOCA PARA INICIAR'}
+                  </span>
+                  <span className="text-[8px] font-mono text-cyan-400/80 mt-0.5">
+                    {voiceSession.isActive ? 'Tap para interrumpir' : 'Tap para hablar'}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Live Transcript Bubble */}
-            <div className="w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-950/80 p-4 text-xs font-mono text-slate-300 shadow-inner min-h-[90px] flex items-center justify-center">
+            {/* Live Transcript Bubble with Audio Replay */}
+            <div className="w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-950/80 p-4 text-xs font-mono text-slate-300 shadow-inner min-h-[85px] flex items-center justify-center">
               {voiceSession.transcripts.length > 0 ? (
-                <div className="text-left w-full space-y-1.5">
+                <div className="text-left w-full space-y-2">
                   {voiceSession.transcripts.slice(-2).map((t, idx) => (
-                    <div key={idx} className="leading-snug">
-                      <span className="font-bold text-cyan-300 uppercase">{t.sender}: </span>
-                      <span>{t.text}</span>
+                    <div key={idx} className="flex items-start justify-between gap-2 leading-snug">
+                      <div>
+                        <span className="font-bold text-cyan-300 uppercase">{t.sender}: </span>
+                        <span>{t.text}</span>
+                      </div>
+                      {t.sender === 'agent' && (
+                        <button
+                          onClick={() => {
+                            unlockIOSAudio();
+                            speakTextAloud(t.text);
+                          }}
+                          className="shrink-0 p-1 text-cyan-400 hover:text-cyan-200 transition"
+                          title="Repetir audio"
+                        >
+                          <Volume2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
               ) : (
                 <span className="text-slate-500 italic text-center">
-                  Di algo como: &ldquo;Tradium, ¿cómo va el portafolio de trading?&rdquo; o &ldquo;Vyra, genera un gancho de TikTok para TurboJet&rdquo;
+                  Di algo como: &ldquo;Tradium, ¿cómo va el balance de trading?&rdquo; o &ldquo;Vyra, genera un gancho de TikTok para TurboJet&rdquo;
                 </span>
               )}
             </div>
+
+            {/* Quick Prompt Chips (1-Tap to Ask Agent) */}
+            <div className="w-full max-w-sm overflow-x-auto no-scrollbar py-1">
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
+                {(activeVoiceAgent.id === 'tradium-trading'
+                  ? [
+                      '¿Cuál es el PnL y balance en Hyperliquid?',
+                      'Explica la regla de 50% compounding',
+                      '¿Qué señales detectas en ETH y BTC?'
+                    ]
+                  : activeVoiceAgent.id === 'vyra-growth'
+                  ? [
+                      '¿Cómo escalamos a S/. 10,000 al día?',
+                      '3 ganchos virales para TikTok Ads',
+                      '¿Cuál es el CPA actual en Lima?'
+                    ]
+                  : activeVoiceAgent.id === 'max-developer'
+                  ? [
+                      '¿Cómo está la latencia de la tienda?',
+                      'Verifica el botón de 1-Click checkout'
+                    ]
+                  : activeVoiceAgent.id === 'echo-sales'
+                  ? [
+                      '¿Cuántos pedidos contra entrega hay hoy?',
+                      'Reporte de envíos con Olva Courier'
+                    ]
+                  : activeVoiceAgent.id === 'nex-data'
+                  ? [
+                      '¿Cuál es la ganancia neta en Soles?',
+                      'Dame el margen tras flete Dropi'
+                    ]
+                  : [
+                      `Dame tu reporte ejecutivo, ${activeVoiceAgent.name}`,
+                      '¿En qué estás trabajando ahora?'
+                    ]
+                ).map((promptText, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      unlockIOSAudio();
+                      sendVoiceText(promptText);
+                      soundFX.playClick(soundEnabled);
+                    }}
+                    className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-mono font-medium text-cyan-300 hover:bg-cyan-500/20 active:scale-95 transition shrink-0"
+                  >
+                    {promptText}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Direct Text / Voice Command Bar */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!quickVoiceInput.trim()) return;
+                unlockIOSAudio();
+                sendVoiceText(quickVoiceInput.trim());
+                setQuickVoiceInput('');
+                soundFX.playClick(soundEnabled);
+              }}
+              className="w-full max-w-sm flex items-center gap-2"
+            >
+              <input
+                type="text"
+                value={quickVoiceInput}
+                onChange={(e) => setQuickVoiceInput(e.target.value)}
+                placeholder={`Comando a ${activeVoiceAgent.name}...`}
+                className="flex-1 rounded-xl border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={!quickVoiceInput.trim()}
+                className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-3 py-2 text-black font-bold text-xs disabled:opacity-40 active:scale-95 transition"
+              >
+                <Send className="h-3.5 w-3.5 text-black" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAgentChat(activeVoiceAgent.id)}
+                className="rounded-xl border border-slate-700 bg-slate-800 p-2 text-slate-300 hover:text-white active:scale-95 transition"
+                title="Abrir Chat Completo"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </button>
+            </form>
 
             {/* Controls Bar */}
             <div className="flex items-center gap-4">
@@ -672,6 +858,7 @@ export const IPhoneExecutiveApp: React.FC = () => {
                 <>
                   <button
                     onClick={() => {
+                      unlockIOSAudio();
                       setVoiceMuted(!voiceSession.isMuted);
                       soundFX.playClick(soundEnabled);
                     }}
@@ -709,8 +896,7 @@ export const IPhoneExecutiveApp: React.FC = () => {
               ) : (
                 <button
                   onClick={() => {
-                    startVoiceSession(activeVoiceAgent.id);
-                    soundFX.playSuccess(soundEnabled);
+                    handleAgentVoice(activeVoiceAgent.id);
                   }}
                   className="flex items-center gap-3 rounded-2xl border-2 border-cyan-400 bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-600 px-8 py-4 text-sm font-black tracking-widest text-black shadow-[0_0_35px_rgba(56,189,248,0.5)] hover:brightness-110 active:scale-95 transition"
                 >
@@ -948,6 +1134,191 @@ export const IPhoneExecutiveApp: React.FC = () => {
           </button>
         </div>
       </nav>
+
+      {/* ========================================================================= */}
+      {/* 4. NATIVE iOS EXECUTIVE CHAT SHEET MODAL (100% Mobile Optimized) */}
+      {/* ========================================================================= */}
+      {mobileChatAgent && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-[#030611] text-slate-100 animate-in fade-in duration-200">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between border-b border-slate-800 bg-[#060a19] px-4 pt-3 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div
+                style={{ backgroundColor: mobileChatAgent.color }}
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-xs font-black text-white font-mono shadow-md"
+              >
+                {mobileChatAgent.name.slice(0, 2)}
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-black text-white font-mono">
+                    {mobileChatAgent.name}
+                  </span>
+                  <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono block truncate max-w-[190px]">
+                  {mobileChatAgent.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const agId = mobileChatAgent.id;
+                  setMobileChatAgentId(null);
+                  handleAgentVoice(agId);
+                }}
+                className="flex items-center gap-1 rounded-xl border border-cyan-400/40 bg-cyan-500/20 px-2.5 py-1.5 text-[11px] font-mono font-bold text-cyan-300 hover:bg-cyan-500/30 transition active:scale-95"
+              >
+                <PhoneCall className="h-3.5 w-3.5" />
+                <span>Llamar</span>
+              </button>
+
+              <button
+                onClick={() => setMobileChatAgentId(null)}
+                className="rounded-full bg-slate-800 p-1.5 text-slate-400 hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Messages Feed */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {currentMobileMessages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 space-y-2 py-12">
+                <Brain className="h-10 w-10 text-cyan-400/50 animate-pulse" />
+                <p className="text-xs font-mono">
+                  Inicia la conversación con {mobileChatAgent.name}.
+                </p>
+              </div>
+            ) : (
+              currentMobileMessages.map((msg, i) => {
+                const isUser = msg.sender === 'user';
+                return (
+                  <div
+                    key={msg.id || i}
+                    className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs ${
+                        isUser
+                          ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-medium rounded-br-none'
+                          : 'bg-slate-900 border border-slate-800 text-slate-100 rounded-bl-none shadow-md'
+                      }`}
+                    >
+                      <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-1 px-1">
+                      <span className="text-[9px] font-mono text-slate-500">{msg.timestamp}</span>
+                      {!isUser && (
+                        <button
+                          onClick={() => {
+                            unlockIOSAudio();
+                            speakTextAloud(msg.text);
+                          }}
+                          className="text-cyan-400 hover:text-cyan-200 text-[10px] flex items-center gap-0.5"
+                          title="Escuchar mensaje"
+                        >
+                          <Volume2 className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Suggested Prompt Chips */}
+          <div className="border-t border-slate-800/80 bg-slate-950/80 px-3 py-2 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              {(mobileChatAgent.id === 'tradium-trading'
+                ? [
+                    '¿Cuál es el PnL y balance en Hyperliquid?',
+                    'Explica la regla de 50% compounding',
+                    '¿Qué señales detectas en ETH y BTC?'
+                  ]
+                : mobileChatAgent.id === 'vyra-growth'
+                ? [
+                    '¿Cómo escalamos a S/. 10,000 al día en Shopify?',
+                    'Genera 3 ganchos virales para TikTok Ads',
+                    '¿Cuál es el CPA actual en Lima?'
+                  ]
+                : mobileChatAgent.id === 'max-developer'
+                ? [
+                    '¿Cómo está la velocidad del checkout móvil?',
+                    'Verifica la latencia de Next.js y Vercel'
+                  ]
+                : mobileChatAgent.id === 'echo-sales'
+                ? [
+                    '¿Cuántos pedidos contra entrega hay confirmados?',
+                    '¿Cómo van los envíos con Olva y Shalom?'
+                  ]
+                : mobileChatAgent.id === 'nex-data'
+                ? [
+                    '¿Cuál es la ganancia neta de hoy en Soles?',
+                    '¿Cuál es el margen real tras flete Dropi?'
+                  ]
+                : [
+                    `¿En qué estás trabajando, ${mobileChatAgent.name}?`,
+                    'Dame tu reporte ejecutivo de hoy'
+                  ]
+              ).map((p, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSendMobileChat(p)}
+                  className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-[10px] font-mono text-slate-300 hover:text-white hover:border-cyan-500 shrink-0 active:scale-95 transition"
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Chat Input Bar */}
+          <div className="border-t border-slate-800 bg-black/90 p-3 pb-8">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMobileChat();
+              }}
+              className="flex items-center gap-2"
+            >
+              <button
+                type="button"
+                onClick={handleDictateMobileChat}
+                className={`rounded-full p-2.5 transition active:scale-95 ${
+                  isDictatingMobileChat
+                    ? 'bg-rose-500/20 text-rose-300 animate-pulse border border-rose-500'
+                    : 'bg-slate-800 text-slate-300 hover:text-white'
+                }`}
+                title="Dictar por voz"
+              >
+                <Mic className="h-4 w-4" />
+              </button>
+
+              <input
+                type="text"
+                value={mobileChatInput}
+                onChange={(e) => setMobileChatInput(e.target.value)}
+                placeholder={`Mensaje a ${mobileChatAgent.name}...`}
+                className="flex-1 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+              />
+
+              <button
+                type="submit"
+                disabled={!mobileChatInput.trim() || isSendingMobileChat}
+                className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 p-2.5 text-black disabled:opacity-40 transition active:scale-95"
+              >
+                <Send className="h-4 w-4 text-black" />
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
