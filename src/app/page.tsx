@@ -22,46 +22,72 @@ import { MeetingRoomModal } from '../components/office/MeetingRoomModal';
 import { CEOOfficeModal } from '../components/office/CEOOfficeModal';
 import { RealtimeVoiceHUD } from '../components/voice/RealtimeVoiceHUD';
 import { IntroSplash } from '../components/ui/IntroSplash';
+import { IPhoneExecutiveApp } from '../components/mobile/IPhoneExecutiveApp';
 
 export default function Home() {
   const viewMode = useOfficeStore((s) => s.viewMode);
   const appVersion = useOfficeStore((s) => s.appVersion);
+  const isMobileExecutiveView = useOfficeStore((s) => s.isMobileExecutiveView);
+  const setIsMobileExecutiveView = useOfficeStore((s) => s.setIsMobileExecutiveView);
+
+  // Auto-detect mobile devices on mount
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileDevice =
+        window.innerWidth < 768 ||
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobileDevice) {
+        setIsMobileExecutiveView(true);
+      }
+    }
+  }, [setIsMobileExecutiveView]);
 
   return (
     <main className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#030712]">
       {/* Intro Splash Screen */}
       <IntroSplash />
 
-      {/* Top Application Navigation & Metrics Bar */}
-      <TopHeader />
+      {isMobileExecutiveView ? (
+        /* Native iPhone 15 Pro Max Executive App */
+        <IPhoneExecutiveApp />
+      ) : (
+        /* Full Desktop Virtual Office Headquarters */
+        <>
+          {/* Top Application Navigation & Metrics Bar */}
+          <TopHeader />
 
-      {/* Live Shopify E-Commerce War Room & Sales Bar */}
-      <ShopifyWarRoomBar />
+          {/* Live Shopify E-Commerce War Room & Sales Bar */}
+          <ShopifyWarRoomBar />
 
-      {/* Sub-Header Department & Status Filters (V1 mode) */}
-      {appVersion === 'v1' && <DepartmentFilterBar />}
+          {/* Sub-Header Department & Status Filters (V1 mode) */}
+          {appVersion === 'v1' && <DepartmentFilterBar />}
 
-      {/* Main Interactive Virtual Office Canvas (V2 Robots Humanoides vs V1 Campus) */}
-      <div className="relative flex-1 w-full h-full overflow-hidden">
-        {appVersion === 'sim' ? (
-          <LifeSimOfficeHQ />
-        ) : appVersion === 'v2' ? (
-          <RealisticRoboticsHQ />
-        ) : viewMode === '3d' ? (
-          <Office3DCanvas />
-        ) : (
-          <OfficeCanvas />
-        )}
+          {/* Main Interactive Virtual Office Canvas (V2 Robots Humanoides vs V1 Campus) */}
+          <div className="relative flex-1 w-full h-full overflow-hidden">
+            {appVersion === 'sim' ? (
+              <LifeSimOfficeHQ />
+            ) : appVersion === 'v2' ? (
+              <RealisticRoboticsHQ />
+            ) : viewMode === '3d' ? (
+              <Office3DCanvas />
+            ) : (
+              <OfficeCanvas />
+            )}
 
-        {/* Floating Mini-Map (Bottom-Left in 2.5D mode) */}
-        {appVersion === 'v1' && viewMode === '2.5d' && <MiniMap />}
+            {/* Floating Mini-Map (Bottom-Left in 2.5D mode) */}
+            {appVersion === 'v1' && viewMode === '2.5d' && <MiniMap />}
 
-        {/* Camera Navigation Controls (Bottom-Right in 2.5D mode) */}
-        {appVersion === 'v1' && viewMode === '2.5d' && <CameraControls />}
-      </div>
+            {/* Camera Navigation Controls (Bottom-Right in 2.5D mode) */}
+            {appVersion === 'v1' && viewMode === '2.5d' && <CameraControls />}
+          </div>
 
-      {/* Real-time Event Stream Ticker (Fixed Bottom) */}
-      <LiveActivityFeed />
+          {/* Real-time Event Stream Ticker (Fixed Bottom) */}
+          <LiveActivityFeed />
+
+          {/* Real-time Bidirectional AI Voice HUD Dock */}
+          <RealtimeVoiceHUD />
+        </>
+      )}
 
       {/* Slide-out Agent Inspector Drawer */}
       <AgentDetailModal />

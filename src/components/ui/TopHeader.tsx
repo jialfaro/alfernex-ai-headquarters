@@ -22,7 +22,8 @@ import {
   Mic,
   ChevronDown,
   X,
-  MessageSquare
+  MessageSquare,
+  Smartphone
 } from 'lucide-react';
 import { soundFX } from '../audio/soundEffects';
 import { SupportedLanguage } from '../../types/office';
@@ -53,6 +54,7 @@ export const TopHeader: React.FC = () => {
   const voiceSession = useOfficeStore((s) => s.voiceSession);
   const selectAgent = useOfficeStore((s) => s.selectAgent);
   const setChatModalOpen = useOfficeStore((s) => s.setChatModalOpen);
+  const setIsMobileExecutiveView = useOfficeStore((s) => s.setIsMobileExecutiveView);
 
   const [isRosterOpen, setIsRosterOpen] = useState(false);
 
@@ -369,6 +371,20 @@ export const TopHeader: React.FC = () => {
         >
           <Crown className="h-3.5 w-3.5 text-amber-400" />
           <span>DESPACHO CEO</span>
+        </button>
+
+        {/* iPhone 15 Pro Max Executive Mode Switcher */}
+        <button
+          onClick={() => {
+            setIsMobileExecutiveView(true);
+            soundFX.playSuccess(soundEnabled);
+          }}
+          className="flex items-center gap-1.5 rounded-lg border border-cyan-400/50 bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-indigo-500/20 px-3 py-1.5 text-xs font-black text-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.25)] hover:brightness-110 active:scale-95 transition"
+          title="Abrir App Ejecutiva optimizada para iPhone 15 Pro Max"
+        >
+          <Smartphone className="h-3.5 w-3.5 text-cyan-400" />
+          <span className="hidden xl:inline">📱 APP IPHONE 15 PRO MAX</span>
+          <span className="xl:hidden">📱 IPHONE</span>
         </button>
 
         {/* Boardroom Collaboration Meeting trigger */}

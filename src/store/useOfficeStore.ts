@@ -79,6 +79,12 @@ interface OfficeStoreState {
   selectedRobotDetailId: string | null;
   setSelectedRobotDetailId: (id: string | null) => void;
 
+  // iPhone 15 Pro Max Executive Mode
+  isMobileExecutiveView: boolean;
+  setIsMobileExecutiveView: (val: boolean) => void;
+  mobileTab: 'dashboard' | 'agents' | 'voice' | 'trading' | '3d';
+  setMobileTab: (tab: 'dashboard' | 'agents' | 'voice' | 'trading' | '3d') => void;
+
   // Life Simulation Systems
   simTime: {
     hour: number;
@@ -358,6 +364,12 @@ export const useOfficeStore = create<OfficeStoreState>((set, get) => ({
   setActiveFloor: (f) => set({ activeFloor: f }),
   selectedRobotDetailId: null,
   setSelectedRobotDetailId: (id) => set({ selectedRobotDetailId: id }),
+
+  // iPhone 15 Pro Max Executive Mode State
+  isMobileExecutiveView: false,
+  setIsMobileExecutiveView: (val) => set({ isMobileExecutiveView: val }),
+  mobileTab: 'dashboard',
+  setMobileTab: (tab) => set({ mobileTab: tab }),
 
   // Real-Time Bidirectional Voice Session Initial State
   voiceSession: {
