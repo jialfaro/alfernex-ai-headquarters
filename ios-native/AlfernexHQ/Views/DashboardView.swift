@@ -31,6 +31,32 @@ public struct DashboardView: View {
                     }
                     
                     Spacer()
+                    
+                    Button {
+                        Task {
+                            await vm.syncWithVercel()
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            if vm.isSyncingWithVercel {
+                                ProgressView()
+                                    .scaleEffect(0.6)
+                                    .tint(.green)
+                            } else {
+                                Circle()
+                                    .fill(vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange)
+                                    .frame(width: 6, height: 6)
+                            }
+                            Text(vm.syncStatusText)
+                                .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                                .foregroundColor(vm.syncStatusText == "VERCEL SYNCED" ? .green : .orange)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.12))
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.3), lineWidth: 1))
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
@@ -161,13 +187,22 @@ public struct DashboardView: View {
                             .font(.system(size: 10, weight: .bold, design: .monospaced))
                             .foregroundColor(.orange)
                         Spacer()
-                        Text("MÁXIMA")
-                            .font(.system(size: 8, weight: .black, design: .monospaced))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
+                        Button {
+                            directiveText = vm.currentDirective
+                            showingDirectiveAlert = true
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "paperplane.fill")
+                                    .font(.system(size: 8))
+                                Text("EMITIR ORDEN")
+                                    .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
                             .background(Color.orange.opacity(0.2))
                             .cornerRadius(6)
                             .foregroundColor(.orange)
+                        }
                     }
                     
                     Text(vm.currentDirective)
@@ -231,6 +266,21 @@ public struct DashboardView: View {
                 
                 Spacer(minLength: 40)
             }
+        }
+        .refreshable {
+            await vm.syncWithVercel()
+        }
+        .alert("Nueva Directiva Presidencial", isPresented: $showingDirectiveAlert) {
+            TextField("Escribe la orden para los 11 agentes...", text: $directiveText)
+            Button("Cancelar", role: .cancel) { }
+            Button("Transmitir a Vercel") {
+                let trimmed = directiveText.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    vm.broadcastDirective(title: trimmed, desc: "Emitida en tiempo real desde iPhone 15 Pro Max")
+                }
+            }
+        } message: {
+            Text("Esta orden se sincronizará inmediatamente con el cuartel general en Vercel y todos los 11 agentes de IA la ejecutarán.")
         }
     }
 }

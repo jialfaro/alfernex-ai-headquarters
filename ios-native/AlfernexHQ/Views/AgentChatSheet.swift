@@ -131,7 +131,7 @@ public struct AgentChatSheet: View {
                             .padding(.top, 14)
                             .padding(.bottom, 8)
                         }
-                        .onChange(of: messages.count) { _ in
+                        .onChange(of: messages.count) {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }

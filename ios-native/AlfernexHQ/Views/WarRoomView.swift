@@ -179,5 +179,8 @@ public struct WarRoomView: View {
                 Spacer(minLength: 40)
             }
         }
+        .refreshable {
+            await vm.syncWithVercel()
+        }
     }
 }

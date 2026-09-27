@@ -8,6 +8,12 @@ public class HQViewModel: ObservableObject {
     @Published public var shopifyTelemetry = ShopifyTelemetry()
     @Published public var tradingTelemetry = TradingTelemetry()
     
+    // Vercel Live Synchronization Status
+    @Published public var isSyncingWithVercel: Bool = false
+    @Published public var syncStatusText: String = "VERCEL SYNCED"
+    @Published public var lastSyncTimestamp: String = "En línea"
+    @Published public var directives: [CEODirectiveDTO] = []
+    
     // Tab Navigation: 0 = Comando, 1 = 11 Agentes, 2 = Voz Directa, 3 = War Room
     @Published public var selectedTab: Int = 0
     
@@ -30,12 +36,12 @@ public class HQViewModel: ObservableObject {
     @Published public var liveActivities: [LiveActivityItem] = [
         LiveActivityItem(id: "1", agentName: "TRADIUM", agentHexColor: "#10b981", message: "Take profit ejecutado en ETH-PERP a +2.0%. 50% compounding transferido a USDC.", timestamp: "1m ago"),
         LiveActivityItem(id: "2", agentName: "VYRA", agentHexColor: "#f43f5e", message: "Optimizando pauta de TikTok Ads en Lima con ganchos de 3s para TurboJet.", timestamp: "2m ago"),
-        LiveActivityItem(id: "3", agentName: "MAX", agentHexColor: "#3b82f6", message: "Build de producción Next.js 16 completado con Turbopack en 906ms.", timestamp: "3m ago"),
-        LiveActivityItem(id: "4", agentName: "ECHO", agentHexColor: "#10b981", message: "142 pedidos COD confirmados con Olva Courier y Shalom.", timestamp: "5m ago"),
+        LiveActivityItem(id: "3", agentName: "MAX", agentHexColor: "#3b82f6", message: "Latencia del checkout optimizada a 0.8s en Turbopack con 88% de conversión.", timestamp: "3m ago"),
+        LiveActivityItem(id: "4", agentName: "ECHO", agentHexColor: "#10b981", message: "142 pedidos contra entrega confirmados con Olva Courier y Shalom.", timestamp: "5m ago"),
         LiveActivityItem(id: "5", agentName: "NEX", agentHexColor: "#059669", message: "Margen neto diario proyectado: S/. 3,450 tras deducción de flete.", timestamp: "8m ago")
     ]
     
-    private var cancellables = Set<AnyCancellable>()
+    private var syncTimer: Timer?
     
     public init() {
         self.activeVoiceAgent = agents.first(where: { $0.id == "tradium-trading" }) ?? agents.first
@@ -52,6 +58,75 @@ public class HQViewModel: ObservableObject {
                 )
             ]
         }
+        
+        // Initial sync with Vercel Web
+        Task {
+            await self.syncWithVercel()
+        }
+        
+        // Periodic background synchronization every 5 seconds
+        self.syncTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.syncWithVercel()
+            }
+        }
+    }
+    
+    // MARK: - Real-time Vercel Synchronization
+    public func syncWithVercel() async {
+        self.isSyncingWithVercel = true
+        
+        do {
+            let response = try await AlfernexAPIService.shared.fetchHQState()
+            
+            // 1. Sync Shopify Telemetry
+            self.shopifyTelemetry.grossRevenuePEN = response.telemetry.shopify.grossRevenuePEN
+            self.shopifyTelemetry.totalOrdersToday = response.telemetry.shopify.totalOrdersToday
+            self.shopifyTelemetry.codSuccessRate = response.telemetry.shopify.codSuccessRate
+            self.shopifyTelemetry.activeSKUs = response.telemetry.shopify.activeSKUs
+            
+            // 2. Sync Hyperliquid Trading Telemetry
+            self.tradingTelemetry.equityUSDC = response.telemetry.trading.equityUSDC
+            self.tradingTelemetry.monthlyReturnPct = response.telemetry.trading.monthlyReturnPct
+            self.tradingTelemetry.winRatePct = response.telemetry.trading.winRatePct
+            self.tradingTelemetry.sharpeRatio = response.telemetry.trading.sharpeRatio
+            self.tradingTelemetry.activePair = response.telemetry.trading.activePair
+            self.tradingTelemetry.takeProfitPct = response.telemetry.trading.takeProfitPct
+            
+            // 3. Sync Directives
+            self.directives = response.directives
+            if let firstDir = response.directives.first {
+                self.currentDirective = firstDir.title
+            }
+            
+            // 4. Sync Live Activities Stream
+            self.liveActivities = response.liveActivities.map { dto in
+                LiveActivityItem(
+                    id: dto.id,
+                    agentName: dto.agentName,
+                    agentHexColor: dto.agentHexColor,
+                    message: dto.message,
+                    timestamp: dto.timestamp
+                )
+            }
+            
+            // 5. Sync Agent status & speech bubbles
+            for agDto in response.agents {
+                if let idx = self.agents.firstIndex(where: { $0.id == agDto.id }) {
+                    self.agents[idx].speechBubble = agDto.speechBubble
+                    self.agents[idx].simStats.energy = agDto.energy
+                    self.agents[idx].simStats.focus = agDto.focus
+                }
+            }
+            
+            self.syncStatusText = "VERCEL SYNCED"
+            self.lastSyncTimestamp = "En vivo"
+        } catch {
+            self.syncStatusText = "OFFLINE CACHE"
+            print("[HQ Sync] Note: Using offline fallback cache: \(error)")
+        }
+        
+        self.isSyncingWithVercel = false
     }
     
     // MARK: - Voice Call Logic
@@ -108,11 +183,10 @@ public class HQViewModel: ObservableObject {
         var currentChat = self.chatMessages[agent.id] ?? []
         currentChat.append(ChatMessageItem(sender: "user", senderName: "Alexis", text: clean, agentId: agent.id))
         
-        // Generate AI Agent Response
-        let response = AlfernexSpeechManager.shared.generateResponse(for: agent, query: clean)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            guard let self = self, self.isVoiceActive else { return }
+        // Generate AI Agent Response (from Vercel API or local neural engine)
+        Task {
+            let vercelResponse = await AlfernexAPIService.shared.sendChatMessage(agentId: agent.id, message: clean)
+            let response = vercelResponse?.reply ?? AlfernexSpeechManager.shared.generateResponse(for: agent, query: clean)
             
             self.voiceTranscripts.append((sender: agent.name, text: response))
             currentChat.append(ChatMessageItem(sender: "agent", senderName: agent.name, text: response, agentId: agent.id))
@@ -172,11 +246,11 @@ public class HQViewModel: ObservableObject {
         currentMsgs.append(userMsg)
         self.chatMessages[agent.id] = currentMsgs
         
-        // Agent AI Response
-        let replyText = AlfernexSpeechManager.shared.generateResponse(for: agent, query: text)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
-            guard let self = self else { return }
+        // Asynchronously call Vercel API and speak response
+        Task {
+            let vercelRes = await AlfernexAPIService.shared.sendChatMessage(agentId: agent.id, message: text)
+            let replyText = vercelRes?.reply ?? AlfernexSpeechManager.shared.generateResponse(for: agent, query: text)
+            
             let agentMsg = ChatMessageItem(sender: "agent", senderName: agent.name, text: replyText, agentId: agent.id)
             var updated = self.chatMessages[agent.id] ?? []
             updated.append(agentMsg)
@@ -194,6 +268,11 @@ public class HQViewModel: ObservableObject {
             LiveActivityItem(id: UUID().uuidString, agentName: "ALEXIS (CEO)", agentHexColor: "#f59e0b", message: "ORDEN PRESIDENCIAL: \(title)", timestamp: "Ahora"),
             at: 0
         )
+        
+        // Push directly to Vercel
+        Task {
+            _ = await AlfernexAPIService.shared.broadcastDirective(title: title, description: desc)
+        }
     }
     
     private func agRoleShort(_ role: String) -> String {
