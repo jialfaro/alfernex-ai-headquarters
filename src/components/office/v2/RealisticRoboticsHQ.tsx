@@ -437,6 +437,13 @@ const WALKTHROUGH_STOPS: WalkthroughStop[] = [
     targetPos: new THREE.Vector3(-22, 3.1, 10.8)
   },
   {
+    id: 'tradium-trading',
+    title: 'MESA DE TRADING CUANTITATIVO & LIQUIDEZ (TRADIUM)',
+    subtitle: 'Terminales Hyperliquid en tiempo real, arbitraje de alta frecuencia y 50% compounding.',
+    cameraPos: new THREE.Vector3(-10, 4.2, 15.8),
+    targetPos: new THREE.Vector3(-10, 3.1, 10.8)
+  },
+  {
     id: 'server-room',
     title: 'BÓVEDA DE SERVIDORES CUÁNTICOS & CIBERDEFENSA (CIPHER)',
     subtitle: 'Racks de alta densidad, fibra óptica, patch panels y Zero Trust Firewall.',
@@ -1121,6 +1128,7 @@ function buildSpatiallyCoherentWorkstations(
     { id: 'cipher-security', x: 10, z: -16, rotationY: Math.PI, screenRole: 'software', monitorCount: 3 },
     { id: 'nova-research', x: -24, z: -2, rotationY: Math.PI / 2, screenRole: 'architecture', monitorCount: 2 },
     { id: 'nex-data', x: -24, z: 12, rotationY: Math.PI / 2, screenRole: 'data', monitorCount: 4 },
+    { id: 'tradium-trading', x: -10, z: 24, rotationY: 0, screenRole: 'data', monitorCount: 4 },
     { id: 'maya-creative', x: 24, z: -2, rotationY: -Math.PI / 2, screenRole: 'marketing', monitorCount: 2 },
     { id: 'atlas-ops', x: 24, z: 12, rotationY: -Math.PI / 2, screenRole: 'architecture', monitorCount: 2 }
   ];

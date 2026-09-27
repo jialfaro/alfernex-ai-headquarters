@@ -348,6 +348,56 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
       return;
     }
 
+    if (lower.includes('llama a tradium') || lower.includes('call tradium') || lower.includes('trae a tradium')) {
+      this.sessionContext.activeColleagueId = 'tradium-trading';
+      this.toolListeners.forEach((cb) =>
+        cb({
+          name: 'summonColleague',
+          status: 'running',
+          description: 'Conectando con TRADIUM (Head of Quant Trading)...'
+        })
+      );
+      await new Promise((r) => setTimeout(r, 650));
+      this.toolListeners.forEach((cb) =>
+        cb({
+          name: 'summonColleague',
+          status: 'done',
+          result: 'TRADIUM se ha sumado a la sesión de voz.'
+        })
+      );
+      const colleagueResponse = isEnglish
+        ? "Tradium online. Watching order books on Hyperliquid. What asset or risk metric shall we review?"
+        : "Tradium en línea. Monitoreando libros en Hyperliquid. ¿Qué activo, posición o métrica de riesgo revisamos?";
+      await this.speakResponse(colleagueResponse, isEnglish ? 'en-US' : 'es-ES', 'tradium-trading');
+      return;
+    }
+
+    // 2.5 Tool Execution: Trading Portfolio & Hyperliquid Quant State
+    if (this.agentId === 'tradium-trading' || lower.includes('trading') || lower.includes('crypto') || lower.includes('cripto') || lower.includes('btc') || lower.includes('bitcoin') || lower.includes('solana') || lower.includes('cartera') || lower.includes('portfolio') || lower.includes('pnl') || lower.includes('posicion') || lower.includes('tradium')) {
+      this.toolListeners.forEach((cb) =>
+        cb({
+          name: 'getTradingPortfolio',
+          status: 'running',
+          description: 'Consultando posiciones y balance en Hyperliquid & AI4Trade...'
+        })
+      );
+      await new Promise((r) => setTimeout(r, 600));
+      this.toolListeners.forEach((cb) =>
+        cb({
+          name: 'getTradingPortfolio',
+          status: 'done',
+          result: 'Equity: $102,450 USD • Win Rate: 68.4% • PnL: +$3,420 • BTC Long (+2.1% TP Hit)'
+        })
+      );
+
+      const resp = isEnglish
+        ? "Portfolio equity is sitting at $102,450 USD with a 68.4% win rate. Our BTC long hit the 2.0% take-profit target, and exactly 50% of realized profit was compounded into our active trade liquidity. Downside protection is armed."
+        : "El capital en gestión está en $102,450 dólares con un win rate de 68.4%. La posición en Bitcoin tocó el objetivo de take-profit en +2.0%, y el 50% de las utilidades ya fue reinvertido según la regla de capitalización. Todos los stop-loss están activos al 2.0%.";
+
+      await this.speakResponse(resp, isEnglish ? 'en-US' : 'es-ES', 'tradium-trading');
+      return;
+    }
+
     // 3. Tool Execution: Check Sales Today
     if (lower.includes('ventas') || lower.includes('sales') || lower.includes('cuanto') || lower.includes('ingresos') || lower.includes('revenue')) {
       this.toolListeners.forEach((cb) =>
@@ -441,6 +491,8 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
         responseText = "Codebase is clean, 0 lints, and our mobile LCP clocked in at 0.78 seconds. Webhooks to Dropi are fully responsive.";
       } else if (this.agentId === 'alex-architect') {
         responseText = "Architecture status optimal. Redis cache is at a 98% hit rate and microservices latency is stabilized at 28 milliseconds.";
+      } else if (this.agentId === 'tradium-trading') {
+        responseText = "Order book liquidity is optimal on Hyperliquid. BTC and SOL positions are protected with 2.0% stop-loss and take-profit targets. Capital is growing safely.";
       } else {
         responseText = `Yes. I'm monitoring our operations right now. Everything is running smoothly and conversions are trending up. What should we tackle next?`;
       }
@@ -451,6 +503,8 @@ export class BrowserRealtimeVoiceProvider implements VoiceProvider {
         responseText = "Sistemas estables al 100%. La arquitectura soporta picos de más de 3,000 pedidos diarios en Dropi sin duplicados.";
       } else if (this.agentId === 'nex-data') {
         responseText = "Métricas al día: margen bruto de 54.2% y cada combo nos está dejando S/. 101 soles limpios. Las finanzas están firmes.";
+      } else if (this.agentId === 'tradium-trading') {
+        responseText = "Liquidez y spreads óptimos en Hyperliquid. Cerramos la orden de BTC con +2.1% y el 50% de la utilidad se reinvirtió de inmediato. El capital está protegido.";
       } else {
         responseText = `Sí. Justo estaba revisando el rendimiento de hoy. Los números se ven muy sólidos. ¿Qué directiva priorizamos?`;
       }

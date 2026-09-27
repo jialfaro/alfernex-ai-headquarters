@@ -223,6 +223,11 @@ export const AgentChatModal: React.FC = () => {
       'Mia, crea un video de impacto demostrando la potencia del TurboJet.',
       'Genera una imagen 3D de alta conversión para la portada de la tienda.',
       'Diseña un banner con oferta de envío gratis en 24h para Lima.'
+    ],
+    'tradium-trading': [
+      'Tradium, ¿cuál es el balance actual de nuestra cartera y el PnL de hoy?',
+      '¿Qué señales y oportunidades de entrada detectas en BTC, ETH y SOL?',
+      'Explica cómo funciona la regla de reinversión del 50% de utilidades.'
     ]
   };
 

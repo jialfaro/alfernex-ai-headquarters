@@ -765,5 +765,91 @@ export const INITIAL_AGENTS: Agent[] = [
         assignedAt: '11:00 AM'
       }
     ]
+  },
+  {
+    id: 'tradium-trading',
+    name: 'TRADIUM',
+    role: 'Head of Algorithmic Trading & Quantitative Finance',
+    department: 'analytics',
+    avatarSeed: 'tradium',
+    color: '#10b981',
+    secondaryColor: '#047857',
+    personality: 'Disciplinado, cuantitativo, altamente enfocado en gestión de riesgo, Sharpe ratio y ejecución de órdenes sin sesgos emocionales.',
+    communicationStyle: 'Ultra preciso, ejecutivo, habla en términos de spreads, PnL, volumen de liquidez y reglas de capitalización.',
+    specialty: 'Hyperliquid autonomous market-making, AI4Trade signals, 50% compounding rule, and trend consensus discovery (BTC, ETH, SOL).',
+    model: 'DeepSeek-R1 + Hyperliquid Quant Core',
+    modelProvider: 'custom',
+    tools: ['Hyperliquid DEX API', 'AI4Trade Engine', 'Order Book Tape Reader', 'Take-Profit/Stop-Loss Guard', 'PnL Compounder'],
+    skills: ['Algorithmic Execution', 'Dynamic Risk Parity', 'Drawdown Guard', 'PnL Compounding', 'Multi-Asset Hedging'],
+    permissions: ['trading_execution', 'order_management', 'portfolio_rebalancing', 'risk_override'],
+    status: 'working',
+    activityLevel: 98,
+    currentTask: 'Monitoreando libro de órdenes en Hyperliquid y gestionando posición abierta en BTC/USD (+2.1% TP target)',
+    taskProgress: 91,
+    tasksToday: 48,
+    tasksCompleted: 44,
+    runningTasks: 3,
+    waitingTasks: 1,
+    lastActivity: 'Just now',
+    memoryCount: 4190,
+    memoryItems: [
+      {
+        id: 'mem-trad-1',
+        category: 'system_knowledge',
+        content: 'Regla de gestión de riesgo: Take-Profit fijado en +2.0% y Stop-Loss en -2.0% con cooldown automático de 30 minutos tras pérdida.',
+        timestamp: 'Hoy 08:30'
+      },
+      {
+        id: 'mem-trad-2',
+        category: 'user_preference',
+        content: 'Regla de capitalización: Re-invertir automáticamente el 50% de las utilidades realizadas en el tamaño base de la siguiente orden.',
+        timestamp: 'Hoy 10:00'
+      },
+      {
+        id: 'mem-trad-3',
+        category: 'long_term',
+        content: 'Watchlist de alta liquidez: BTC, ETH, SOL, LTC, AVAX, LINK. Tendencia alcista confirmada por consenso de 4 agentes.',
+        timestamp: 'Hoy 11:45'
+      }
+    ],
+    officeDetails: {
+      suiteName: 'Quantitative Trading Floor & Alpha Lab 404',
+      deskStyle: 'trading_wall',
+      decorItems: [
+        'Ticker LED curvo de cotizaciones cripto y forex en vivo',
+        'Terminal Bloomberg Quad-OLED de alta resolución',
+        'Péndulo de Newton cinético de latón cepillado',
+        'Pad de trading táctil macro con botones de ejecución instantánea'
+      ],
+      hologramDisplays: [
+        { title: 'Portfolio Equity', type: 'metrics', value: '$102,450', subtext: 'USDC / Cash Balance', badge: '+18.4% MoM' },
+        { title: 'Win Rate Real', type: 'chart', value: '68.4%', subtext: '48 Trades ejecutados', badge: 'HIGH SHARPE' },
+        { title: 'BTC/USD Position', type: 'metrics', value: '+2.1%', subtext: 'Take-Profit Hit ✓', badge: 'CLOSED PROFIT' },
+        { title: 'Compounding Pool', type: 'chart', value: '$3,420', subtext: '50% Reinvested Profits', badge: 'ARMED' }
+      ],
+      wallColor: '#10b981',
+      panoramicView: 'Financial District Skyscraper view with Realtime Neon Candlesticks'
+    },
+    position: { x: DEPARTMENTS.analytics.center.x, y: DEPARTMENTS.analytics.center.y },
+    targetPosition: { x: DEPARTMENTS.analytics.center.x, y: DEPARTMENTS.analytics.center.y },
+    path: [],
+    homeStation: { x: DEPARTMENTS.analytics.center.x - 20, y: DEPARTMENTS.analytics.center.y + 10 },
+    facing: 'NW',
+    action: 'typing',
+    actionTimer: 0,
+    walkCycle: 0,
+    speechBubble: 'BTC tocó Take-Profit en +2.1%. Reinversión del 50% procesada.',
+    speechTimer: 200,
+    tasks: [
+      {
+        id: 't-trad-1',
+        title: 'Ejecución algorítmica y monitoreo de Stop-Loss dinámico',
+        description: 'Mantener take-profit (+2.0%) y stop-loss (-2.0%) en BTC, ETH y SOL con tamaño adaptativo de orden.',
+        priority: 'critical',
+        status: 'in-progress',
+        progress: 91,
+        assignedAt: '09:00 AM'
+      }
+    ]
   }
 ];

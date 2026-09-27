@@ -313,6 +313,35 @@ export const ROBOT_PROFILES: Record<string, RobotProfile> = {
       ],
       deskItems: ['Lector biométrico de huellas dactilares', 'Llaves de seguridad de hardware en soporte metálico', 'Linterna táctica ultravioleta', 'Caja de seguridad de aluminio reforzado', 'Bebida energética sin azúcar']
     }
+  },
+  'tradium-trading': {
+    id: 'tradium-trading',
+    name: 'TRADIUM',
+    role: 'Head of Algorithmic Trading & Quantitative Finance',
+    department: 'analytics',
+    departmentLabel: 'Quantitative Markets & Liquid Alpha',
+    floor: 4,
+    ledColor: 'EMERALD GREEN',
+    ledHex: '#10b981',
+    silhouette: 'analytical-chassis',
+    distinctiveFeature: 'Chasis cerámico blanco con uniones en titanio pulido, sensor ocular de frecuencia de mercado y halo esmeralda',
+    accessory: 'Ticker holográfico de pulsera con cotizaciones en vivo de BTC, ETH y SOL, y pad macro de órdenes rápidas',
+    badge: {
+      title: 'CHIEF QUANTITATIVE OFFICER',
+      clearance: 'LEVEL-5 CAPITAL',
+      idNumber: 'ALF-RB-011'
+    },
+    workstation: {
+      hardware: 'Bloomberg Terminal Quad-Display 4K OLED + ThinkStation P920 Extreme Dual Xeon',
+      screenTitle: 'HYPERLIQUID ORDER BOOK • LIVE CANDLESTICK & QUANT COMPILATION',
+      screenMetrics: [
+        'Cartera en Gestión: $102,450 USD [Equity]',
+        'Win Rate: 68.4% • Sharpe Ratio: 2.85 • Max DD: -1.8%',
+        'Posición BTC/USD: Long +2.1% (TP +2.0% Hit)',
+        'Regla de Reinversión: 50% utilidades acumuladas'
+      ],
+      deskItems: ['Ticker LED de precios cripto en tiempo real', 'Teclado de trading macro de 24 teclas mecánicas', 'Calculadora financiera de precisión', 'Taza térmica de acero inoxidable', 'Péndulo de Newton cinético en latón']
+    }
   }
 };
 
@@ -352,11 +381,11 @@ export const CORPORATE_FLOORS: CorporateFloor[] = [
   },
   {
     floorNumber: 4,
-    name: 'PISO 4: INVESTIGACIÓN, DATA SCIENCE & ESTUDIO CREATIVO',
-    subtitle: 'Modelos Neuronales, Análisis Financiero y Producción 3D',
+    name: 'PISO 4: INVESTIGACIÓN, DATA SCIENCE & TRADING CUANTITATIVO',
+    subtitle: 'Modelos Neuronales, Algoritmos Hyperliquid de Tradium y P&L',
     departments: ['research', 'analytics', 'creative'],
-    agentIds: ['nova-research', 'nex-data', 'maya-creative'],
-    description: 'Laboratorio de innovación profunda y estética de vanguardia. Pizarras de cristal magnéticas, estaciones de análisis financiero con gráficos de Soles peruanos y estudio de animación 3D.'
+    agentIds: ['nova-research', 'nex-data', 'tradium-trading', 'maya-creative'],
+    description: 'Laboratorio de innovación profunda, finanzas cuantitativas y modelos de trading autónomos de Tradium. Pantallas Bloomberg, tickers de criptomonedas y análisis en Soles y Dólares.'
   },
   {
     floorNumber: 5,
