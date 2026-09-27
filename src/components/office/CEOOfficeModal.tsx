@@ -152,7 +152,7 @@ export const CEOOfficeModal: React.FC = () => {
                   Alexis &bull; Despacho de Presidencia
                 </h2>
                 <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-                  Desde aquí supervisas a los 10 agentes ejecutivos, ordenas prioridades de venta en Shopify, controlas la logística contra entrega con Dropi Perú y diriges la expansión.
+                  Desde aquí supervisas a los {agents.length} agentes ejecutivos, ordenas prioridades de venta en Shopify, controlas la logística contra entrega con Dropi Perú y diriges la expansión.
                 </p>
               </div>
 
@@ -360,7 +360,7 @@ export const CEOOfficeModal: React.FC = () => {
             <span className="text-slate-400 block mb-2 font-bold uppercase text-[10.5px]">
               Llamar a un Ejecutivo a tu Despacho para Briefing Privado:
             </span>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
               {agents.map((ag) => (
                 <button
                   key={ag.id}

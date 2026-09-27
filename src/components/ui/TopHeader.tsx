@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useOfficeStore } from '../../store/useOfficeStore';
 import {
   Users,
@@ -19,7 +19,10 @@ import {
   ArrowLeft,
   Crown,
   Gamepad2,
-  Mic
+  Mic,
+  ChevronDown,
+  X,
+  MessageSquare
 } from 'lucide-react';
 import { soundFX } from '../audio/soundEffects';
 import { SupportedLanguage } from '../../types/office';
@@ -48,6 +51,10 @@ export const TopHeader: React.FC = () => {
   const enterCeoOffice = useOfficeStore((s) => s.enterCeoOffice);
   const startVoiceSession = useOfficeStore((s) => s.startVoiceSession);
   const voiceSession = useOfficeStore((s) => s.voiceSession);
+  const selectAgent = useOfficeStore((s) => s.selectAgent);
+  const setChatModalOpen = useOfficeStore((s) => s.setChatModalOpen);
+
+  const [isRosterOpen, setIsRosterOpen] = useState(false);
 
   const isFollowing = !!camera.followingAgentId;
   const selectedAgent = agents.find((a) => a.id === selectedAgentId);
@@ -88,13 +95,20 @@ export const TopHeader: React.FC = () => {
       {/* Corporate Telemetry HUD (Autonomous HQ status) */}
       <div className="hidden xl:flex items-center gap-4 rounded-xl border border-sky-500/20 bg-slate-950/80 px-4 py-1.5 shadow-[inset_0_1px_10px_rgba(0,0,0,0.8)] backdrop-blur-md">
         {/* Agents Online */}
-        <div className="flex items-center gap-2 border-r border-slate-800 pr-3.5">
-          <Users className="h-3.5 w-3.5 text-sky-400" />
+        <button
+          onClick={() => {
+            setIsRosterOpen(!isRosterOpen);
+            soundFX.playClick(soundEnabled);
+          }}
+          className="flex items-center gap-2 border-r border-slate-800 pr-3.5 text-left hover:opacity-80 transition group"
+          title={`Ver plantilla completa de los ${agents.length} agentes autónomos`}
+        >
+          <Users className="h-3.5 w-3.5 text-sky-400 group-hover:scale-110 transition-transform" />
           <div className="text-xs">
             <span className="text-slate-400 text-[9.5px] uppercase tracking-wider block leading-none">Agents Online</span>
-            <span className="font-bold text-white font-mono">{hqMetrics.agentsOnline}</span>
+            <span className="font-bold text-white font-mono">{agents.length}</span>
           </div>
-        </div>
+        </button>
 
         {/* Active Tasks */}
         <div className="flex items-center gap-2 border-r border-slate-800 pr-3.5">
@@ -185,7 +199,7 @@ export const TopHeader: React.FC = () => {
                 ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
-            title="Versión V2: ArchViz Fotorealista 8K, iluminación y tour cinematográfico de 10 espacios"
+            title="Versión V2: ArchViz Fotorealista 8K, iluminación y tour cinematográfico de 11 estaciones corporativas"
           >
             <Sparkles className="h-3.5 w-3.5" />
             <span>🏢 ARCHVIZ V2</span>
@@ -225,6 +239,124 @@ export const TopHeader: React.FC = () => {
             <span>{viewMode === '3d' ? '3D REALISTA' : '2.5D CLÁSICO'}</span>
           </button>
         )}
+
+        {/* Interactive Agent Roster Trigger */}
+        <div className="relative">
+          <button
+            onClick={() => {
+              setIsRosterOpen(!isRosterOpen);
+              soundFX.playClick(soundEnabled);
+            }}
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-all shadow-md ${
+              isRosterOpen
+                ? 'border-sky-400 bg-sky-500/25 text-sky-200 shadow-[0_0_15px_rgba(56,189,248,0.4)]'
+                : 'border-sky-500/30 bg-sky-950/40 text-sky-300 hover:border-sky-400/60 hover:text-white hover:bg-sky-900/50'
+            }`}
+            title={`Ver los ${agents.length} agentes autónomos de ALFERNEX`}
+          >
+            <Users className="h-3.5 w-3.5 text-sky-400" />
+            <span className="font-mono font-black">AGENTES ({agents.length})</span>
+            <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isRosterOpen ? 'rotate-180 text-sky-300' : 'text-slate-400'}`} />
+          </button>
+
+          {/* Roster Dropdown Panel */}
+          {isRosterOpen && (
+            <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl border border-sky-500/30 bg-[#060919]/95 p-3.5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl z-50 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5 mb-2.5 px-1">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="font-mono text-[11px] font-black tracking-wider text-white uppercase">
+                    PLANTILLA CORPORATIVA ({agents.length} AGENTES)
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsRosterOpen(false)}
+                  className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              <div className="max-h-[380px] overflow-y-auto no-scrollbar space-y-1.5 pr-1">
+                {agents.map((ag) => {
+                  const isSelected = ag.id === selectedAgentId;
+                  const isTradium = ag.id === 'tradium-trading';
+                  return (
+                    <div
+                      key={ag.id}
+                      onClick={() => {
+                        selectAgent(ag.id);
+                        setIsRosterOpen(false);
+                        soundFX.playClick(soundEnabled);
+                      }}
+                      style={{ borderColor: isSelected ? ag.color : undefined }}
+                      className={`flex items-center justify-between p-2 rounded-xl border transition cursor-pointer group ${
+                        isSelected
+                          ? 'border-sky-400 bg-sky-500/15 shadow-sm'
+                          : isTradium
+                          ? 'border-emerald-500/40 bg-emerald-950/20 hover:bg-emerald-900/30'
+                          : 'border-slate-800/80 bg-slate-900/60 hover:bg-slate-800/80 hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          style={{ backgroundColor: ag.color, boxShadow: `0 0 10px ${ag.color}50` }}
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-black text-white font-mono"
+                        >
+                          {ag.name.slice(0, 2)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-xs font-bold text-white group-hover:text-sky-300 transition truncate">
+                              {ag.name}
+                            </span>
+                            {isTradium && (
+                              <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[8.5px] font-mono font-bold text-emerald-300 border border-emerald-500/40 animate-pulse">
+                                QUANT TRADING
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-slate-400 truncate">
+                            {ag.role}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0 ml-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            selectAgent(ag.id);
+                            setChatModalOpen(true);
+                            setIsRosterOpen(false);
+                            soundFX.playClick(soundEnabled);
+                          }}
+                          className="rounded-lg p-1.5 text-slate-400 hover:text-sky-300 hover:bg-sky-500/20 transition"
+                          title={`Abrir chat con ${ag.name}`}
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            selectAgent(ag.id);
+                            startVoiceSession(ag.id);
+                            setIsRosterOpen(false);
+                            soundFX.playSuccess(soundEnabled);
+                          }}
+                          className="rounded-lg p-1.5 text-slate-400 hover:text-cyan-300 hover:bg-cyan-500/20 transition"
+                          title={`Hablar por voz con ${ag.name}`}
+                        >
+                          <Mic className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* CEO Presidential Suite Trigger */}
         <button

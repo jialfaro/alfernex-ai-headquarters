@@ -325,7 +325,7 @@ export const useOfficeStore = create<OfficeStoreState>((set, get) => ({
   },
 
   hqMetrics: {
-    agentsOnline: 10,
+    agentsOnline: INITIAL_AGENTS.length,
     activeTasks: 24,
     completedToday: 137,
     aiUtilization: 87,

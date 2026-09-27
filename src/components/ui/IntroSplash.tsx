@@ -9,6 +9,7 @@ export const IntroSplash: React.FC = () => {
   const isIntroFinished = useOfficeStore((s) => s.isIntroFinished);
   const soundEnabled = useOfficeStore((s) => s.soundEnabled);
   const setIntroFinished = useOfficeStore((s) => s.setIntroFinished);
+  const agentCount = useOfficeStore((s) => s.agents.length);
 
   const [step, setStep] = useState(0);
 
@@ -90,7 +91,7 @@ export const IntroSplash: React.FC = () => {
 
           <div className="flex items-center justify-between text-slate-400">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-purple-400" /> 10 Autonomous AI Agents
+              <ShieldCheck className="h-3.5 w-3.5 text-purple-400" /> {agentCount} Autonomous AI Agents
             </span>
             <span className={step >= 3 ? 'text-purple-400 font-bold' : 'text-slate-600'}>
               {step >= 3 ? '[ READY ]' : 'INITIALIZING...'}
