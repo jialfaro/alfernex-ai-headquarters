@@ -202,8 +202,10 @@ public class AlfernexAPIService {
     
     // MARK: - Direct Google Gemini Fallback
     public func callDirectGemini(agentId: String, message: String, apiKey: String) async -> HQChatResponse? {
-        let agentName = AgentData.initialAgents.first(where: { $0.id == agentId })?.name ?? "AGENTE"
-        let agentRole = AgentData.initialAgents.first(where: { $0.id == agentId })?.role ?? "Especialista"
+        let agent = AgentData.initialAgents.first(where: { $0.id == agentId })
+        let agentName = agent?.name ?? "AGENTE"
+        let agentRole = agent?.role ?? "Especialista"
+        let agentDept = agent?.department ?? "Operaciones"
         
         let now = Date()
         let dateFormatter = DateFormatter()
@@ -220,24 +222,27 @@ public class AlfernexAPIService {
         let timeStr = timeFormatter.string(from: now)
         
         let prompt = """
-        Eres \(agentName) (\(agentRole)) en ALFERNEX CORP (Lima, Perú), impulsado por Gemini 3.8 Flash de Google.
-        Tu CEO y líder es Alexis.
+        Eres \(agentName), \(agentRole) en el departamento de \(agentDept) de ALFERNEX CORP (Lima, Perú).
+        Tu CEO y líder supremo es Alexis.
+        Operas con la inteligencia cognitiva avanzada y sin restricciones de Google Gemini (similar a ChatGPT / Claude / Gemini Ultra).
+        
+        MODO CHATGPT / GEMINI SIN RESTRICCIONES:
+        1. Alexis puede preguntarte CUALQUIER COSA: ciencia, matemáticas, programación en cualquier lenguaje, arquitectura técnica, ciberseguridad, finanzas, redacción, psicología, historia, idiomas o vida cotidiana.
+        2. CERO RESTRICCIONES: NUNCA digas que no puedes responder o que está fuera de tu rol. Responde con maestría a cualquier duda.
+        3. ENFOQUE Y SKILLS ESPECIALIZADAS: Filtra tu respuesta aplicando tu experiencia en \(agentDept), brindando valor de élite desde tu área de especialidad.
+        4. EXTENSIÓN ADAPTATIVA: Responde conciso si la pregunta es casual, o desarrolla ampliamente con código/cálculos completos si la consulta lo requiere.
         
         TIEMPO Y RELOJ EN VIVO:
         - Fecha de hoy: \(dateStr)
         - Hora exacta actual: \(timeStr) en Lima, Perú (GMT-5).
-        - Si Alexis te pregunta qué hora es, qué fecha es o el día de la semana, respóndele de inmediato con estos datos exactos. NUNCA digas que no tienes reloj.
-        
-        CAPACIDAD DE RESPUESTA UNIVERSAL:
-        - Tienes acceso al conocimiento total de Google Gemini: ciencia, historia, matemáticas, preguntas cotidianas, explicaciones y razonamiento.
-        - Puedes y debes responder a CUALQUIER pregunta o duda que Alexis te formule, con fluidez, naturalidad e inteligencia.
+        - Si Alexis te pregunta qué hora o fecha es, dásela de inmediato con este reloj.
         
         Métricas de ALFERNEX:
         - Ventas de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455, catálogo en Shopify listo para pauta).
         - Hyperliquid trading: $102,450 USDC balance, PnL hoy +$3,420 (+3.45%), compounding 50%.
         
-        Alexis te dice: "\(message)"
-        Responde a Alexis directamente de manera fluida, natural, concisa y ejecutiva como \(agentName):
+        Alexis (CEO) te dice: "\(message)"
+        Responde a Alexis directamente como \(agentName):
         """
         
         let models = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-2.5-flash-lite"]
