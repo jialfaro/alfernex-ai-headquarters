@@ -330,8 +330,11 @@ Responde a Alexis directamente como ${agent.name}:
           body: JSON.stringify({
             contents: [{ parts: [{ text: promptText }] }],
             generationConfig: {
-              temperature: 0.75,
-              maxOutputTokens: 2048,
+              temperature: 0.7,
+              maxOutputTokens: 1200,
+              thinkingConfig: {
+                thinkingBudget: 0
+              }
             },
           }),
         });
