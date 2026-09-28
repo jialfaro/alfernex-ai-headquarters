@@ -20,6 +20,7 @@
 		A10011 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10011 /* ContentView.swift */; };
 		A10012 /* AlfernexSpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10012 /* AlfernexSpeechManager.swift */; };
 		A10013 /* AgentChatSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10013 /* AgentChatSheet.swift */; };
+		A10020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10020 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		B10011 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B10012 /* AlfernexSpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlfernexSpeechManager.swift; sourceTree = "<group>"; };
 		B10013 /* AgentChatSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentChatSheet.swift; sourceTree = "<group>"; };
+		B10020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C10001 /* AlfernexHQ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlfernexHQ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				B10001 /* AlfernexHQApp.swift */,
+				B10020 /* Assets.xcassets */,
 				E10003 /* Models */,
 				E10004 /* ViewModels */,
 				E10005 /* Views */,
@@ -120,6 +123,17 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXResourcesBuildPhase section */
+		R10001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		F10001 /* AlfernexHQ */ = {
 			isa = PBXNativeTarget;
@@ -127,6 +141,7 @@
 			buildPhases = (
 				H10001 /* Sources */,
 				D10001 /* Frameworks */,
+				R10001 /* Resources */,
 			);
 			buildRules = (
 			);

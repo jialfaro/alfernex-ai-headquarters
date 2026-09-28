@@ -191,7 +191,7 @@ public struct DashboardView: View {
                 // Master Directive Banner
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
-                        Label("DIRECTIVA SUPREMA EN CURSO", systemImage: "shield.checkmark.fill")
+                        Label("DIRECTIVA SUPREMA EN CURSO", systemImage: "checkmark.shield.fill")
                             .font(.system(size: 10, weight: .bold, design: .monospaced))
                             .foregroundColor(.orange)
                         Spacer()
