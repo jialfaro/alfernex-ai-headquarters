@@ -54,8 +54,10 @@ export async function POST(req: NextRequest) {
     const result = await handleIncomingWhatsAppMessage(fromPhone, messageText);
 
     // If Meta WhatsApp Business credentials exist, send reply back to WhatsApp
-    const metaToken = process.env.WHATSAPP_TOKEN || process.env.META_WHATSAPP_TOKEN;
-    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_ID;
+    const DEFAULT_META_PHONE_ID = '1344470085414942';
+    const DEFAULT_META_TOKEN = 'EAAPZBlAVvVIgBSnigu388APatH4ZB0XWEGiLSLBAQ58MCLnr7lXlhEBVZCDM2Hr0elI72PJrp2xnU10tW68S5HVis2as1EENp1HBkEIcIPFh6ZAILRSGSpjkQaQ4xb7icjFu7kZC79CKkeZBOYcLOOjSGyyCZCNxfXOqGJk4GdbshKORZAKfVewdkQIfDcrwkyy9wnhO7M0Ayujpp1pn16UiRZBNcokhGZApdoKPGTc72XOZCqHVLAZBMFAoKjPj4rerEHCqAmisFeE1THGcZBDbVLTZAty4Ko';
+    const metaToken = process.env.WHATSAPP_TOKEN || process.env.META_WHATSAPP_TOKEN || DEFAULT_META_TOKEN;
+    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_ID || DEFAULT_META_PHONE_ID;
 
     if (metaToken && phoneId && result.replyText) {
       try {

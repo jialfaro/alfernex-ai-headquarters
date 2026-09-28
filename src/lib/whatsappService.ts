@@ -106,6 +106,9 @@ _¡Gracias por comprar con seguridad y confianza en ALFERNEX!_`;
  * Dispatches an automated WhatsApp order confirmation message.
  * Attempts Meta WhatsApp Cloud API first, and automatically generates wa.me dispatch fallback.
  */
+const DEFAULT_META_PHONE_ID = '1344470085414942';
+const DEFAULT_META_TOKEN = 'EAAPZBlAVvVIgBSnigu388APatH4ZB0XWEGiLSLBAQ58MCLnr7lXlhEBVZCDM2Hr0elI72PJrp2xnU10tW68S5HVis2as1EENp1HBkEIcIPFh6ZAILRSGSpjkQaQ4xb7icjFu7kZC79CKkeZBOYcLOOjSGyyCZCNxfXOqGJk4GdbshKORZAKfVewdkQIfDcrwkyy9wnhO7M0Ayujpp1pn16UiRZBNcokhGZApdoKPGTc72XOZCqHVLAZBMFAoKjPj4rerEHCqAmisFeE1THGcZBDbVLTZAty4Ko';
+
 export async function sendOrderConfirmationWhatsApp(
   order: WhatsAppOrderPayload
 ): Promise<WhatsAppDispatchResult> {
@@ -113,8 +116,8 @@ export async function sendOrderConfirmationWhatsApp(
   const messageText = formatOrderConfirmationMessage(order);
   const waMeLink = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(messageText)}`;
 
-  const metaToken = process.env.WHATSAPP_TOKEN || process.env.META_WHATSAPP_TOKEN;
-  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_ID;
+  const metaToken = process.env.WHATSAPP_TOKEN || process.env.META_WHATSAPP_TOKEN || DEFAULT_META_TOKEN;
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_ID || DEFAULT_META_PHONE_ID;
 
   let dispatchResult: WhatsAppDispatchResult = {
     success: true,
