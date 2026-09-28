@@ -226,7 +226,7 @@ public class AlfernexAPIService {
                 ],
                 "generationConfig": [
                     "temperature": 0.75,
-                    "maxOutputTokens": 250
+                    "maxOutputTokens": 2048
                 ]
             ]
             

@@ -146,7 +146,7 @@ Responde a Alexis de manera fluida, natural, concisa y ejecutiva como ${agent.na
             contents: [{ parts: [{ text: promptText }] }],
             generationConfig: {
               temperature: 0.75,
-              maxOutputTokens: 250,
+              maxOutputTokens: 2048,
             },
           }),
         });
