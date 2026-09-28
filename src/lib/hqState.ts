@@ -6,6 +6,7 @@
  */
 
 import { generateGeminiAgentResponse, AGENT_REGISTRY } from './geminiAI';
+import { ShopifyOrder } from '../types/office';
 
 export interface HQTelemetry {
   shopify: {
@@ -348,6 +349,8 @@ let hqAgents: HQAgentState[] = [
   }
 ];
 
+let hqOrders: ShopifyOrder[] = [];
+
 export function getFullHQState() {
   return {
     success: true,
@@ -356,8 +359,49 @@ export function getFullHQState() {
     telemetry: hqTelemetry,
     directives: hqDirectives,
     liveActivities: hqActivities,
-    agents: hqAgents
+    agents: hqAgents,
+    orders: hqOrders
   };
+}
+
+export function recordNewOrder(order: ShopifyOrder) {
+  // Prepend to orders
+  const existingIdx = hqOrders.findIndex((o) => o.id === order.id);
+  if (existingIdx >= 0) {
+    hqOrders[existingIdx] = order;
+  } else {
+    hqOrders.unshift(order);
+  }
+
+  // Update telemetry
+  hqTelemetry.shopify.totalOrdersToday = hqOrders.length;
+  hqTelemetry.shopify.pendingCount = hqOrders.filter((o) => o.status !== 'CONFIRMADO' && o.status !== 'ENTREGADO').length;
+  hqTelemetry.shopify.confirmedOrdersToday = hqOrders.filter((o) => o.status === 'CONFIRMADO').length;
+  hqTelemetry.shopify.grossRevenuePEN = hqOrders.reduce((sum, o) => sum + (o.final_price || o.price || 0), 0);
+  hqTelemetry.shopify.netProfitPEN = Number((hqTelemetry.shopify.grossRevenuePEN * 0.542).toFixed(2));
+}
+
+export function updateOrderStatus(orderIdOrPhone: string, status: string) {
+  const order = hqOrders.find((o) => o.id === orderIdOrPhone || o.phone.includes(orderIdOrPhone));
+  if (order) {
+    order.status = status;
+    hqTelemetry.shopify.confirmedOrdersToday = hqOrders.filter((o) => o.status === 'CONFIRMADO').length;
+    hqTelemetry.shopify.pendingCount = hqOrders.filter((o) => o.status !== 'CONFIRMADO' && o.status !== 'ENTREGADO').length;
+  }
+}
+
+export function addHQActivity(activity: { agentName: string; agentHexColor: string; message: string }) {
+  const act: HQActivity = {
+    id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    agentName: activity.agentName,
+    agentHexColor: activity.agentHexColor,
+    message: activity.message,
+    timestamp: 'Ahora'
+  };
+  hqActivities.unshift(act);
+  if (hqActivities.length > 30) {
+    hqActivities.pop();
+  }
 }
 
 export function broadcastNewDirective(data: {
