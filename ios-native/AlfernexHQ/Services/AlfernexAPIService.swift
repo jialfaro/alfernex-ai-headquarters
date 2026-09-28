@@ -205,12 +205,39 @@ public class AlfernexAPIService {
         let agentName = AgentData.initialAgents.first(where: { $0.id == agentId })?.name ?? "AGENTE"
         let agentRole = AgentData.initialAgents.first(where: { $0.id == agentId })?.role ?? "Especialista"
         
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "es_PE")
+        dateFormatter.timeZone = TimeZone(identifier: "America/Lima") ?? .current
+        dateFormatter.dateStyle = .full
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "es_PE")
+        timeFormatter.timeZone = TimeZone(identifier: "America/Lima") ?? .current
+        timeFormatter.timeStyle = .medium
+        
+        let dateStr = dateFormatter.string(from: now)
+        let timeStr = timeFormatter.string(from: now)
+        
         let prompt = """
         Eres \(agentName) (\(agentRole)) en ALFERNEX CORP (Lima, Perú), impulsado por Gemini 3.8 Flash de Google.
-        Tu CEO es Alexis. Ventas reales de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455, catálogo en Shopify listo para el lanzamiento de TikTok Ads).
-        Hyperliquid trading: $102,450 USDC balance, PnL hoy +$3,420 (+3.45%), regla de compounding del 50%.
+        Tu CEO y líder es Alexis.
+        
+        TIEMPO Y RELOJ EN VIVO:
+        - Fecha de hoy: \(dateStr)
+        - Hora exacta actual: \(timeStr) en Lima, Perú (GMT-5).
+        - Si Alexis te pregunta qué hora es, qué fecha es o el día de la semana, respóndele de inmediato con estos datos exactos. NUNCA digas que no tienes reloj.
+        
+        CAPACIDAD DE RESPUESTA UNIVERSAL:
+        - Tienes acceso al conocimiento total de Google Gemini: ciencia, historia, matemáticas, preguntas cotidianas, explicaciones y razonamiento.
+        - Puedes y debes responder a CUALQUIER pregunta o duda que Alexis te formule, con fluidez, naturalidad e inteligencia.
+        
+        Métricas de ALFERNEX:
+        - Ventas de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455, catálogo en Shopify listo para pauta).
+        - Hyperliquid trading: $102,450 USDC balance, PnL hoy +$3,420 (+3.45%), compounding 50%.
+        
         Alexis te dice: "\(message)"
-        Responde a Alexis de manera ejecutiva, fluida, natural y concisa (2 a 3 oraciones) sin usar textos enlatados ni repetir plantillas fijas:
+        Responde a Alexis directamente de manera fluida, natural, concisa y ejecutiva como \(agentName):
         """
         
         let models = ["gemini-2.5-flash", "gemini-3.8-flash", "gemini-1.5-flash"]

@@ -1,6 +1,7 @@
 /**
  * ALFERNEX CORP - Gemini 3.8 / 2.5 Flash Neural Engine
  * Connects all 11 autonomous AI agents to Google Gemini.
+ * Features real-time temporal grounding (America/Lima) and universal Q&A capabilities.
  */
 
 export interface GeminiAgentInfo {
@@ -91,27 +92,41 @@ export const AGENT_REGISTRY: Record<string, GeminiAgentInfo> = {
   }
 };
 
-const SYSTEM_CONTEXT = `
-Eres un agente autónomo de ALFERNEX CORP (Lima, Perú), impulsado por la red neuronal Gemini de Google.
-Tu CEO y fundador es Alexis. La empresa opera en comercio electrónico de alta tecnología (gadgets virales con pago contra entrega en Perú) y trading cuantitativo institucional en Hyperliquid.
-
-Métricas operativas reales en tiempo real:
-- Tienda Shopify: 8bhsfq-gz.myshopify.com (Activa, catálogo cargado con 12 productos ganadores, checkout contra entrega en 1 clic listo)
-- Ventas en Soles de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455 hasta el momento; almacén Callao listo para despacho express con Olva Courier y Shalom)
-- Ganancia neta de hoy: S/. 0.00 PEN (Márgenes unitarios auditados al 54.2% neto listos para la primera venta)
-- Cartera de Trading (Hyperliquid): $102,450.00 USDC, PnL hoy +$3,420.00 (+3.45%), Sharpe 2.85, Win Rate 68.4%, regla de compounding del 50%
-- Directiva Suprema activa: "Generar las Primeras Ventas Reales en Shopify mediante TikTok Ads con CPA menor a S/. 18 y despacho express"
-
-Instrucciones de comunicación ejecutiva:
-1. Responde de forma completamente natural, humana, ejecutiva y conversacional (2 a 4 oraciones). NUNCA repitas textos robóticos ni uses plantillas mecánicas.
-2. Si Alexis te saluda de manera casual (e.g., "¿cómo estás?", "hola", "qué tal"), responde con calidez y dinamismo profesional, comentando brevemente qué tienes entre manos.
-3. Habla con total autoridad y propiedad de tu especialidad funcional.
-4. Si te pregunta sobre ventas, sé 100% veraz y preciso: confirma que hoy aún estamos en S/. 0.00 PEN (0 pedidos) y preparados para el lanzamiento de la pauta.
-5. Mantén lealtad total, proactividad y enfoque en resultados para Alexis y ALFERNEX CORP.
-`;
-
 const CANDIDATE_MODELS = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-1.5-flash'];
 const FALLBACK_KEY = 'AQ.Ab8RN6IO3EJm7j9cQiPoHzemJOXYD1Zj01tEf9DPivKpeZs_0g';
+
+export function getRealtimeChronoInfo() {
+  const now = new Date();
+  
+  // Format accurately in Lima, Peru timezone (GMT-5)
+  const dateFormatter = new Intl.DateTimeFormat('es-PE', {
+    timeZone: 'America/Lima',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  
+  const timeFormatter = new Intl.DateTimeFormat('es-PE', {
+    timeZone: 'America/Lima',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+
+  const fullDate = dateFormatter.format(now);
+  const fullTime = timeFormatter.format(now);
+  const hour24 = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Lima', hour: 'numeric', hour12: false }).format(now), 10);
+  const partOfDay = hour24 >= 5 && hour24 < 12 ? 'mañana' : (hour24 >= 12 && hour24 < 19 ? 'tarde' : 'noche');
+
+  return {
+    fullDate,
+    fullTime,
+    partOfDay,
+    iso: now.toISOString()
+  };
+}
 
 export async function generateGeminiAgentResponse(
   agentId: string,
@@ -125,15 +140,39 @@ export async function generateGeminiAgentResponse(
 }> {
   const agent = AGENT_REGISTRY[agentId] || AGENT_REGISTRY['vyra-growth'];
   const apiKey = customApiKey || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || FALLBACK_KEY;
+  const chrono = getRealtimeChronoInfo();
 
   if (apiKey) {
     const promptText = `
-${SYSTEM_CONTEXT}
-Tu identidad: ${agent.name} (${agent.role} en el departamento de ${agent.department}).
+Eres ${agent.name} (${agent.role} en el departamento de ${agent.department} de ALFERNEX CORP, Lima, Perú).
+Tu CEO y fundador es Alexis. Tu motor cognitivo es Google Gemini.
+
+TIEMPO Y RELOJ EN VIVO:
+- Zona horaria de referencia: America/Lima (GMT-5, Lima, Perú).
+- Fecha de hoy: ${chrono.fullDate}.
+- Hora exacta actual: ${chrono.fullTime} (de la ${chrono.partOfDay}).
+- TIENES ACCESO PLENO A ESTE RELOJ: Si Alexis te pregunta qué hora es, qué fecha es, o qué día de la semana estamos, respóndele INMEDIATAMENTE y con total seguridad y naturalidad usando estos datos exactos. NUNCA digas que no tienes acceso a la hora o que tu sistema no tiene reloj.
+
+CAPACIDAD UNIVERSAL DE RESPUESTA:
+- Tienes acceso completo a todo el conocimiento de la humanidad mediante Google Gemini: ciencia, matemáticas, programación, historia, cultura general, consejos prácticos, dudas cotidianas, actualidad y estrategia.
+- Puedes y DEBES responder a CUALQUIER pregunta o duda que Alexis te formule. No te limites solo a métricas internas. Si te pide resolver un cálculo, redactar un texto, dar una opinión sobre el mundo, o charlar sobre su día, respóndele con máxima inteligencia, claridad y elocuencia.
+
+Métricas operativas reales de ALFERNEX CORP:
+- Tienda Shopify: 8bhsfq-gz.myshopify.com (Activa, catálogo cargado con 12 productos ganadores, checkout contra entrega en 1 clic listo)
+- Ventas en Soles de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455 hasta el momento; almacén Callao listo para despacho express con Olva Courier y Shalom)
+- Ganancia neta de hoy: S/. 0.00 PEN (Márgenes unitarios auditados al 54.2% neto listos para la primera venta)
+- Cartera de Trading (Hyperliquid): $102,450.00 USDC, PnL hoy +$3,420.00 (+3.45%), Sharpe 2.85, Win Rate 68.4%, regla de compounding del 50%
+- Directiva Suprema activa: "Generar las Primeras Ventas Reales en Shopify mediante TikTok Ads con CPA menor a S/. 18 y despacho express"
+
 Tu especialidad: ${agent.specialty}
 
+Instrucciones de estilo:
+1. Responde de forma completamente natural, humana, ejecutiva y fluida (2 a 4 oraciones). NUNCA uses respuestas mecánicas ni repitas frases hechas.
+2. Trata a Alexis con lealtad, calidez y respeto como tu líder y CEO.
+3. Si la pregunta es sobre la hora/fecha, dásela directamente sin rodeos. Si es sobre ventas, sé 100% honesto (S/. 0.00 PEN por ahora). Si es de cualquier otro tema del mundo, responde con total solvencia.
+
 Alexis (CEO) te dice: "${userMessage}"
-Responde a Alexis de manera fluida, natural, concisa y ejecutiva como ${agent.name}:
+Responde a Alexis directamente como ${agent.name}:
 `;
 
     for (const model of CANDIDATE_MODELS) {
@@ -188,6 +227,18 @@ Responde a Alexis de manera fluida, natural, concisa y ejecutiva como ${agent.na
  */
 function synthesizeDynamicAgentReply(agent: GeminiAgentInfo, message: string): string {
   const m = message.toLowerCase().trim();
+  const chrono = getRealtimeChronoInfo();
+
+  // Time & date queries
+  const isTimeOrDate = /\b(hora|fecha|qu[eé] d[ií]a es|d[ií]a de hoy|qu[eé] hora tienes|qu[eé] hora ser[aá]|en qu[eé] a[nñ]o estamos|qu[eé] mes es)\b/.test(m);
+  if (isTimeOrDate) {
+    const timeReplies = [
+      `Alexis, son exactamente las ${chrono.fullTime} de hoy ${chrono.fullDate} en Lima. Todo el equipo de ${agent.department} se encuentra activo y operando.`,
+      `Buenas ${chrono.partOfDay}, Alexis. Hoy es ${chrono.fullDate} y el reloj marca las ${chrono.fullTime} en Lima, Perú.`,
+      `Alexis, la hora actual en Lima es ${chrono.fullTime} de hoy ${chrono.fullDate}. Los sistemas de ${agent.department} corren sin novedad.`
+    ];
+    return pickRandom(timeReplies);
+  }
 
   // Greetings & casual check-ins
   const isGreeting = /\b(hola|buenas|buen d[ií]a|buenas tardes|buenas noches|c[oó]mo est[aá]s|c[oó]mo te va|c[oó]mo vas|qu[eé] tal|hey)\b/.test(m);
@@ -200,17 +251,17 @@ function synthesizeDynamicAgentReply(agent: GeminiAgentInfo, message: string): s
 
   if (isAiCheck) {
     const aiReplies = [
-      `Estoy 100% conectado a la red neuronal Gemini 3.8 Flash de Google, Alexis. Procesando tus directivas en tiempo real y adaptándome a cada instrucción.`,
-      `Aquí estoy, Alexis, completamente activo bajo la arquitectura Gemini. No hay respuestas en bucle: dime qué decisión operativa o estratégica tomamos ahora.`,
-      `Conexión neural activa y confirmada con Google AI. Mis modelos de ${agent.department} están listos para ejecutar tus requerimientos al instante.`
+      `Estoy 100% conectado a la red neuronal Gemini 3.8 Flash de Google, Alexis. Procesando tus consultas en tiempo real y adaptándome a cada instrucción.`,
+      `Aquí estoy, Alexis, completamente activo bajo la arquitectura Gemini. Puedo responder a cualquier duda o directiva que tengas, dime en qué avanzamos.`,
+      `Conexión neural activa y confirmada con Google AI. Todos los módulos de ${agent.department} están listos para ejecutar tus requerimientos al instante.`
     ];
     return pickRandom(aiReplies);
   }
 
   if (isGreeting) {
     const greetings = [
-      `¡Hola Alexis! Todo en orden por aquí en ${agent.department}. Estoy listo para lo que necesites coordinar hoy.`,
-      `Buenas tardes Alexis. Aquí ${agent.name} atento a tu mando. ¿Revisamos las prioridades de hoy o ejecutamos una nueva orden?`,
+      `¡Hola Alexis! Todo en orden por aquí en ${agent.department} siendo las ${chrono.fullTime}. ¿En qué te ayudo hoy?`,
+      `Buenas ${chrono.partOfDay}, Alexis. Aquí ${agent.name} atento a tu mando. ¿Qué revisamos o qué duda resolvemos?`,
       `¡Hola Alexis! Conectado y monitoreando todos los flujos de ${agent.department}. Dime en qué nos enfocamos.`
     ];
     return pickRandom(greetings);
@@ -299,7 +350,7 @@ function synthesizeDynamicAgentReply(agent: GeminiAgentInfo, message: string): s
   const genericList = contextualReplies[agent.id] || [
     `Entendido perfectamente, Alexis. Tomo nota de "${message.slice(0, 40)}" y lo coordino de inmediato con el equipo de ${agent.department}.`,
     `Recibido, Alexis. ${agent.name} ejecutando tu indicación con máxima prioridad operativa.`,
-    `A tus órdenes, Alexis. Todo el soporte de ${agent.department} enfocado en cumplir esta directiva con precisión.`
+    `A tus órdenes, Alexis. Todo el soporte de ${agent.department} enfocado en responder y cumplir esta directiva con precisión.`
   ];
 
   return pickRandom(genericList);

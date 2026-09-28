@@ -233,10 +233,35 @@ public class AlfernexSpeechManager: NSObject, ObservableObject, AVSpeechSynthesi
     public func generateResponse(for agent: Agent, query: String) -> String {
         let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
+        let isTime = q.contains("hora") || q.contains("reloj")
+        let isDate = q.contains("fecha") || q.contains("que dia") || q.contains("qué día") || q.contains("que fecha") || q.contains("qué fecha") || q.contains("calendario") || q.contains("que año") || q.contains("qué año")
         let isGreeting = q.contains("hola") || q.contains("buenas") || q.contains("buen día") || q.contains("como estas") || q.contains("cómo estás") || q.contains("que tal") || q.contains("qué tal") || q.contains("hey")
         let isStatus = q.contains("estado") || q.contains("reporte") || q.contains("novedades") || q.contains("en que estas") || q.contains("en qué estás") || q.contains("que haces") || q.contains("cómo va") || q.contains("actualiza")
         let isSales = q.contains("venta") || q.contains("ventas") || q.contains("pedidos") || q.contains("ordenes") || q.contains("órdenes") || q.contains("cuanto vendimos") || q.contains("cuánto vendimos")
         let isAi = q.contains("ia") || q.contains("inteligencia") || q.contains("gemini") || q.contains("robot") || q.contains("repites") || q.contains("conectado")
+        
+        if isTime || isDate {
+            let now = Date()
+            let df = DateFormatter()
+            df.locale = Locale(identifier: "es_PE")
+            df.timeZone = TimeZone(identifier: "America/Lima") ?? .current
+            df.dateStyle = .full
+            
+            let tf = DateFormatter()
+            tf.locale = Locale(identifier: "es_PE")
+            tf.timeZone = TimeZone(identifier: "America/Lima") ?? .current
+            tf.timeStyle = .short
+            
+            let dStr = df.string(from: now)
+            let tStr = tf.string(from: now)
+            
+            let timeOptions = [
+                "Alexis, son exactamente las \(tStr) de hoy \(dStr) en Lima. Todo el equipo de \(agent.department) se encuentra activo y operando.",
+                "Alexis, hoy es \(dStr) y el reloj marca las \(tStr) en Lima, Perú. ¿Qué instrucción ejecutamos?",
+                "La hora actual en Lima es \(tStr) de hoy \(dStr), Alexis. Todos los sistemas bajo control."
+            ]
+            return timeOptions.randomElement()!
+        }
         
         if isAi {
             let aiOptions = [
