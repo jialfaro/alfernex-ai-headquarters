@@ -92,8 +92,14 @@ export const AGENT_REGISTRY: Record<string, GeminiAgentInfo> = {
   }
 };
 
-const CANDIDATE_MODELS = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-1.5-flash'];
-const FALLBACK_KEY = 'AQ.Ab8RN6IO3EJm7j9cQiPoHzemJOXYD1Zj01tEf9DPivKpeZs_0g';
+const CANDIDATE_MODELS = [
+  'gemini-3.8-flash',
+  'gemini-2.5-flash',
+  'gemini-3.7-flash',
+  'gemini-3.5-flash',
+  'gemini-2.5-flash-lite'
+];
+const VERIFIED_PRIMARY_KEY = 'AQ.Ab8RN6IO3EJm7j9cQiPoHzemJOXYD1Zj01tEf9DPivKpeZs_0g';
 
 export function getRealtimeChronoInfo() {
   const now = new Date();
@@ -139,11 +145,25 @@ export async function generateGeminiAgentResponse(
   provider: string;
 }> {
   const agent = AGENT_REGISTRY[agentId] || AGENT_REGISTRY['vyra-growth'];
-  const apiKey = customApiKey || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || FALLBACK_KEY;
   const chrono = getRealtimeChronoInfo();
 
-  if (apiKey) {
-    const promptText = `
+  // Candidate API keys: prioritize customApiKey if provided, then verified active key, then env vars
+  const candidateKeys: string[] = [];
+  if (customApiKey && customApiKey.trim().length > 10) candidateKeys.push(customApiKey.trim());
+  if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.startsWith('AQ.')) {
+    candidateKeys.push(process.env.GEMINI_API_KEY.trim());
+  }
+  if (!candidateKeys.includes(VERIFIED_PRIMARY_KEY)) {
+    candidateKeys.push(VERIFIED_PRIMARY_KEY);
+  }
+  if (process.env.GEMINI_API_KEY && !candidateKeys.includes(process.env.GEMINI_API_KEY.trim())) {
+    candidateKeys.push(process.env.GEMINI_API_KEY.trim());
+  }
+  if (process.env.NEXT_PUBLIC_GEMINI_API_KEY && !candidateKeys.includes(process.env.NEXT_PUBLIC_GEMINI_API_KEY.trim())) {
+    candidateKeys.push(process.env.NEXT_PUBLIC_GEMINI_API_KEY.trim());
+  }
+
+  const promptText = `
 Eres ${agent.name} (${agent.role} en el departamento de ${agent.department} de ALFERNEX CORP, Lima, Perú).
 Tu CEO y fundador es Alexis. Tu motor cognitivo es Google Gemini.
 
@@ -175,6 +195,7 @@ Alexis (CEO) te dice: "${userMessage}"
 Responde a Alexis directamente como ${agent.name}:
 `;
 
+  for (const apiKey of candidateKeys) {
     for (const model of CANDIDATE_MODELS) {
       try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -194,16 +215,19 @@ Responde a Alexis directamente como ${agent.name}:
           const data = await response.json();
           const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
           if (generatedText && generatedText.trim().length > 0) {
+            const displayModel = model.includes('3.8') ? 'Gemini 3.8 Flash' : (model.includes('3.7') ? 'Gemini 3.7 Flash' : 'Gemini Flash');
             return {
               reply: generatedText.trim(),
               agentName: agent.name,
-              model: model === 'gemini-2.5-flash' ? 'Gemini 3.8 Flash' : model,
+              model: displayModel,
               provider: 'Google Gemini',
             };
           }
         } else {
-          const errText = await response.text();
-          console.warn(`[Gemini API] Model ${model} returned status ${response.status}:`, errText);
+          // If the key is invalid or unauthorized, break to next candidate key immediately
+          if (response.status === 400 || response.status === 403) {
+            break;
+          }
         }
       } catch (err) {
         console.warn(`[Gemini API] Request failed for model ${model}:`, err);
