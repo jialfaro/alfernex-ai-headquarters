@@ -58,10 +58,10 @@ export const INITIAL_AGENTS: Agent[] = [
         'Sillón curvado de diseño en terciopelo azul noche'
       ],
       hologramDisplays: [
-        { title: 'ROAS TikTok Ads', type: 'chart', value: '4.8x', subtext: 'Target 4.5x superado', badge: 'ACTIVE CBO' },
-        { title: 'Conversion Rate', type: 'metrics', value: '3.82%', subtext: 'Checkout contra entrega', badge: '+18% WoW' },
-        { title: 'CTR Promedio', type: 'metrics', value: '4.91%', subtext: 'Hook #3 Parrilla 30s', badge: 'VIRAL' },
-        { title: 'Revenue Attributed', type: 'chart', value: 'S/. 48,250', subtext: 'Este mes en Soles (PEN)', badge: 'SCALING' }
+        { title: 'ROAS TikTok Ads', type: 'chart', value: '0.0x', subtext: 'Target 4.5x listo', badge: 'READY' },
+        { title: 'Conversion Rate', type: 'metrics', value: '0.00%', subtext: 'Checkout contra entrega', badge: 'STANDBY' },
+        { title: 'CTR Promedio', type: 'metrics', value: '0.00%', subtext: 'Hook #3 Parrilla 30s', badge: 'PREPARADO' },
+        { title: 'Revenue Attributed', type: 'chart', value: 'S/. 0.00', subtext: 'Esperando activación de pauta', badge: 'STANDBY' }
       ],
       wallColor: '#f43f5e',
       panoramicView: 'Cyberpunk Skyline overlooking Central Neon Plaza'
@@ -366,10 +366,10 @@ export const INITIAL_AGENTS: Agent[] = [
         'Lounge de plantas tropicales purificadoras'
       ],
       hologramDisplays: [
-        { title: 'CSAT Score', type: 'metrics', value: '98.4%', subtext: '520 reviews este mes', badge: 'EXCELLENT' },
-        { title: 'COD Confirmation', type: 'chart', value: '100%', subtext: 'Zero failed deliveries', badge: 'VERIFIED' },
+        { title: 'CSAT Score', type: 'metrics', value: '100%', subtext: 'Canal configurado', badge: 'READY' },
+        { title: 'COD Confirmation', type: 'chart', value: '100%', subtext: 'Filtro WhatsApp listo', badge: 'VERIFIED' },
         { title: 'Avg Response Time', type: 'metrics', value: '14s', subtext: 'WhatsApp Cloud API', badge: 'INSTANT' },
-        { title: 'Orders In Transit', type: 'logs', value: '3 Active', subtext: 'Surco, Arequipa, Trujillo', badge: 'EN ROUTE' }
+        { title: 'Orders In Transit', type: 'logs', value: '0 Active', subtext: 'Esperando pedidos', badge: 'STANDBY' }
       ],
       wallColor: '#10b981',
       panoramicView: 'Garden Atrium with Cascading Holographic Waterfalls'
@@ -382,7 +382,7 @@ export const INITIAL_AGENTS: Agent[] = [
     action: 'sitting',
     actionTimer: 0,
     walkCycle: 0,
-    speechBubble: '¡3 pedidos confirmados en Lima y Trujillo!',
+    speechBubble: 'WhatsApp +51 listo para confirmar los primeros pedidos.',
     speechTimer: 150,
     tasks: [
       {
@@ -440,10 +440,10 @@ export const INITIAL_AGENTS: Agent[] = [
         'Mesa de madera de nogal oscuro con bordes iluminados'
       ],
       hologramDisplays: [
-        { title: 'Facturación Bruta', type: 'metrics', value: 'S/. 617.00', subtext: 'Hoy en Soles', badge: 'REVENUE' },
-        { title: 'Ganancia Neta Limpia', type: 'metrics', value: 'S/. 440.00', subtext: '71.3% Margen real', badge: 'NET PROFIT' },
-        { title: 'ROAS Blended', type: 'chart', value: '4.52x', subtext: 'TikTok Ads + Orgánico', badge: 'HIGH ROAS' },
-        { title: 'Ticket Promedio', type: 'metrics', value: 'S/. 185.00', subtext: 'Impulsado por upsell', badge: 'AOV HIGH' }
+        { title: 'Facturación Bruta', type: 'metrics', value: 'S/. 0.00', subtext: 'Hoy en Soles', badge: 'STANDBY' },
+        { title: 'Ganancia Neta Limpia', type: 'metrics', value: 'S/. 0.00', subtext: '54.2% Margen proyectado', badge: 'STANDBY' },
+        { title: 'ROAS Blended', type: 'chart', value: '0.00x', subtext: 'TikTok Ads + Orgánico', badge: 'READY' },
+        { title: 'Ticket Promedio', type: 'metrics', value: 'S/. 0.00', subtext: 'Catálogo listo', badge: 'STANDBY' }
       ],
       wallColor: '#14b8a6',
       panoramicView: 'Algorithmic Financial Matrix with Real-Time Stock Feeds'
@@ -456,7 +456,7 @@ export const INITIAL_AGENTS: Agent[] = [
     action: 'analyzing',
     actionTimer: 0,
     walkCycle: 0,
-    speechBubble: 'Ganancia neta acumulada: S/. 440.00 PEN!',
+    speechBubble: 'Márgenes de Dropi auditados en 54%. Listos para facturar.',
     speechTimer: 180,
     tasks: [
       {
@@ -514,10 +514,10 @@ export const INITIAL_AGENTS: Agent[] = [
         'Vitrina iluminada con prototipos físicos de gadgets'
       ],
       hologramDisplays: [
-        { title: 'Upsell Take Rate', type: 'chart', value: '33.3%', subtext: 'Estuche EVA (+S/. 25)', badge: 'HIGH CONV' },
-        { title: 'Pipeline Value', type: 'metrics', value: 'S/. 12,400', subtext: 'Leads en seguimiento', badge: 'WARM' },
-        { title: 'Avg Close Speed', type: 'metrics', value: '2.4 min', subtext: 'Chat a Checkout', badge: 'RAPID' },
-        { title: 'Top Bundle', type: 'metrics', value: 'Combo Gamer', subtext: 'TurboJet + MagSafe', badge: 'BESTSELLER' }
+        { title: 'Upsell Take Rate', type: 'chart', value: '0.0%', subtext: 'Estuche EVA (+S/. 25)', badge: 'READY' },
+        { title: 'Pipeline Value', type: 'metrics', value: 'S/. 0.00', subtext: 'Catálogo activo', badge: 'STANDBY' },
+        { title: 'Avg Close Speed', type: 'metrics', value: 'Instant', subtext: 'Checkout 1-Click', badge: 'RAPID' },
+        { title: 'Top Bundle', type: 'metrics', value: 'Combo Gamer', subtext: 'TurboJet + MagSafe', badge: 'READY' }
       ],
       wallColor: '#eab308',
       panoramicView: 'Golden Tower Lounge overlooking Luxury Cyber District'
@@ -530,7 +530,7 @@ export const INITIAL_AGENTS: Agent[] = [
     action: 'typing',
     actionTimer: 0,
     walkCycle: 0,
-    speechBubble: '¡33% de compradores eligen el combo con estuche!',
+    speechBubble: 'Funnel y upsell (+S/. 25) listos para la primera venta.',
     speechTimer: 170,
     tasks: [
       {

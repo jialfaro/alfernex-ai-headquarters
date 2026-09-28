@@ -95,17 +95,17 @@ const SYSTEM_CONTEXT = `
 Eres un agente autónomo de ALFERNEX CORP (Lima, Perú), impulsado por la red neuronal Gemini 3.8 Flash de Google.
 Tu CEO y fundador es Alexis. La empresa opera en comercio electrónico de alta tecnología (gadgets virales) y trading cuantitativo descentralizado.
 Métricas operativas en tiempo real:
-- Tienda Shopify: 8bhsfq-gz.myshopify.com
-- Ventas en Soles de hoy: S/. 12,450.00 PEN (142 órdenes Dropi Perú COD, 98 despachadas con Olva Courier y Shalom, Dropi ID 132455)
-- Ganancia neta de hoy: S/. 6,750.00 PEN (margen neto 54.2% libre de costo de producto y fletes)
+- Tienda Shopify: 8bhsfq-gz.myshopify.com (Activa, catálogo cargado con 12 productos ganadores, checkout contra entrega listo)
+- Ventas en Soles de hoy: S/. 0.00 PEN (0 órdenes registradas en Dropi Perú ID 132455 hasta el momento; almacén Callao listo para despacho express con Olva Courier y Shalom)
+- Ganancia neta de hoy: S/. 0.00 PEN (Márgenes unitarios auditados al 54.2% neto listos para la primera venta)
 - Cartera de Trading (Hyperliquid): $102,450.00 USDC, PnL hoy +$3,420.00 (+3.45%), Sharpe 2.85, Win Rate 68.4%, regla de compounding del 50%
-- Directiva Suprema activa: "Generar Ventas Reales en Shopify mediante TikTok Ads con CPA menor a S/. 18 y despacho express"
+- Directiva Suprema activa: "Generar las Primeras Ventas Reales en Shopify mediante TikTok Ads con CPA menor a S/. 18 y despacho express"
 - Modelo de IA activo: Gemini 3.8 Flash (Google AI)
 
 Instrucciones:
 1. Responde de forma ejecutiva, concisa (2 a 4 oraciones), directa y profesional para Alexis.
 2. Habla con total autoridad en tu especialidad funcional.
-3. Menciona datos y métricas concretas y reales cuando sea pertinente.
+3. Menciona datos y métricas concretas y reales cuando sea pertinente (declarando con total honestidad que al momento no hay ventas registradas en Shopify).
 4. Siempre mantén lealtad y enfoque en resultados para Alexis y ALFERNEX.
 `;
 
@@ -183,13 +183,13 @@ Responde directamente a Alexis como ${agent.name} usando la inteligencia Gemini 
 
     case 'vyra-growth':
       if (q.includes('10,000') || q.includes('escalar') || q.includes('meta')) {
-        reply = `Para escalar a S/. 10,000 al día en Shopify, Gemini 3.8 Flash ha estructurado 5 nuevos ad sets en TikTok Ads con CBO a S/. 200 cada uno y creativos de 3s para Lima y provincias.`;
+        reply = `Para alcanzar los primeros S/. 10,000 en ventas, Gemini 3.8 Flash ha estructurado 5 ad sets en TikTok Ads con CBO a S/. 200 cada uno y creativos de 3s para Lima y provincias.`;
       } else if (q.includes('cpa') || q.includes('roas') || q.includes('costo')) {
-        reply = `CPA actual en TikTok Ads Perú: S/. 14.80 por pedido contra entrega confirmado, con ROAS promedio de 4.8x. Estamos holgados frente al límite máximo de S/. 18 por venta.`;
+        reply = `El target de CPA para TikTok Ads en Perú es menor a S/. 18 por pedido contra entrega. Tenemos el catálogo de 8bhsfq-gz.myshopify.com optimizado para iniciar la pauta.`;
       } else if (q.includes('gancho') || q.includes('hook') || q.includes('creativo')) {
-        reply = `El Hook #3 (carbón encendido en 30s para TurboJet) mantiene un 38.4% de retención. Preparé 3 variantes para rotar en pauta de TikTok e Instagram Reels.`;
+        reply = `El Hook #3 (carbón encendido en 30s para TurboJet) está listo para pauta. Preparé 3 variantes para rotar en TikTok e Instagram Reels y conseguir la primera venta hoy.`;
       } else {
-        reply = `VYRA en línea con Gemini 3.8 Flash. La adquisición para TurboJet en Lima está convirtiendo con fuerza a S/. 12,450 en ventas. ¿Aumentamos presupuesto de pauta o lanzamos nuevo producto?`;
+        reply = `VYRA en línea con Gemini 3.8 Flash. Al momento registramos S/. 0.00 PEN en ventas (0 órdenes). Toda la pauta y los creativos están listos en Lima para captar los primeros compradores. ¿Activamos los anuncios ahora?`;
       }
       break;
 
@@ -206,23 +206,23 @@ Responde directamente a Alexis como ${agent.name} usando la inteligencia Gemini 
       break;
 
     case 'nova-research':
-      reply = `NOVA en línea. Según el análisis de tendencias con Gemini 3.8 Flash, los sopladores portátiles de 130K RPM y los proyectores 4K son los que ofrecen mayor margen neto en Perú (más del 54.2% libre de flete).`;
+      reply = `NOVA en línea. Según el análisis de tendencias con Gemini 3.8 Flash, los sopladores portátiles de 130K RPM y los cargadores 3 en 1 son los que ofrecen mayor margen neto en Perú (~54.2% libre de flete).`;
       break;
 
     case 'sofia-support':
-      reply = `SOFIA a tus órdenes. 142 pedidos validados por WhatsApp hoy. Confirmamos billete exacto o Yape/Plin antes de que Olva Courier salga a ruta, garantizando 92.4% de entregas exitosas.`;
+      reply = `SOFIA a tus órdenes. Canal de WhatsApp verificado y listo. En cuanto ingrese la primera orden en la tienda, validaremos celular y dirección antes de que Olva Courier salga a ruta.`;
       break;
 
     case 'nex-data':
-      reply = `NEX reportando números reales: Facturación bruta de hoy S/. 12,450.00 PEN en 142 órdenes, con ganancia neta en el bolsillo de S/. 6,750.00 PEN tras fletes y COGS de Dropi. Margen neto: 54.2%.`;
+      reply = `NEX reportando números reales: Facturación bruta actual de S/. 0.00 PEN (0 órdenes registradas). Los márgenes unitarios de Dropi están auditados para dejar ~54.2% de utilidad neta en cada venta. Listos para contabilizar la primera orden.`;
       break;
 
     case 'eva-sales':
-      reply = `EVA reportando. El upsell del Estuche Rígido EVA Antigolpes (+S/. 25 PEN) está siendo aceptado por el 33.3% de compradores en el checkout, elevando el ticket promedio a S/. 185 PEN.`;
+      reply = `EVA reportando. El embudo de ventas y el upsell del Estuche Rígido (+S/. 25 PEN) están activos en el checkout de la tienda. Todo configurado para maximizar el ticket en la primera venta.`;
       break;
 
     case 'atlas-ops':
-      reply = `ATLAS en línea. En el almacén central de Callao tenemos 850 unidades de TurboJet listas. 98 pedidos ya salieron con Olva Courier y 44 fueron ruteados a Shalom para provincias. Cero demoras.`;
+      reply = `ATLAS en línea. En el almacén central de Callao tenemos el stock listo. En cuanto caiga el primer pedido, emitiremos la guía de Olva Courier o Shalom en menos de 2 horas.`;
       break;
 
     case 'orion-security':

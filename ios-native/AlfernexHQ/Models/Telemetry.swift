@@ -13,13 +13,13 @@ public struct ShopifyTelemetry: Codable {
     public var dropiAccount: String
     
     public init(
-        grossRevenuePEN: Double = 12450.0,
-        netProfitPEN: Double = 6750.0,
-        totalOrdersToday: Int = 142,
-        confirmedOrdersToday: Int = 132,
-        deliveredCount: Int = 98,
-        pendingCount: Int = 44,
-        codSuccessRate: Double = 92.4,
+        grossRevenuePEN: Double = 0.0,
+        netProfitPEN: Double = 0.0,
+        totalOrdersToday: Int = 0,
+        confirmedOrdersToday: Int = 0,
+        deliveredCount: Int = 0,
+        pendingCount: Int = 0,
+        codSuccessRate: Double = 0.0,
         activeSKUs: Int = 12,
         storeUrl: String = "8bhsfq-gz.myshopify.com",
         dropiAccount: String = "132455"

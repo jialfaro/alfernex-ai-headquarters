@@ -264,7 +264,7 @@ const INITIAL_ACTIVITIES: LiveActivity[] = [
     agentName: 'SOFIA',
     agentColor: '#10b981',
     type: 'task_complete',
-    message: 'Confirmado pedido COD de TurboJet en Surco con Olva Courier (PE-5307542)',
+    message: 'Canal de WhatsApp +51 verificado. Lista para confirmar las primeras órdenes contra entrega.',
     timestamp: '5 mins ago'
   }
 ];

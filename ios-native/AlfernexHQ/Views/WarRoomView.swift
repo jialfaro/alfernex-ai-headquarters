@@ -187,9 +187,9 @@ public struct WarRoomView: View {
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.gray)
                             Spacer()
-                            Text("\(String(format: "%.1f", vm.shopifyTelemetry.codSuccessRate))%")
+                            Text(vm.shopifyTelemetry.totalOrdersToday > 0 ? "\(String(format: "%.1f", vm.shopifyTelemetry.codSuccessRate))%" : "0.0% (Listo para despachar)")
                                 .font(.system(size: 11, weight: .black, design: .monospaced))
-                                .foregroundColor(.green)
+                                .foregroundColor(vm.shopifyTelemetry.totalOrdersToday > 0 ? .green : .gray)
                         }
                         
                         HStack {
@@ -197,7 +197,7 @@ public struct WarRoomView: View {
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.gray)
                             Spacer()
-                            Text("\(vm.shopifyTelemetry.totalOrdersToday) Totales (\(vm.shopifyTelemetry.confirmedOrdersToday) Conf. / \(vm.shopifyTelemetry.deliveredCount) Desp.)")
+                            Text(vm.shopifyTelemetry.totalOrdersToday > 0 ? "\(vm.shopifyTelemetry.totalOrdersToday) Totales (\(vm.shopifyTelemetry.confirmedOrdersToday) Conf. / \(vm.shopifyTelemetry.deliveredCount) Desp.)" : "0 Órdenes registradas")
                                 .font(.system(size: 10.5, weight: .bold, design: .monospaced))
                                 .foregroundColor(.white)
                         }

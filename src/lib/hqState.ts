@@ -79,13 +79,13 @@ export interface HQAgentState {
 // Global serverless cache with exact real synchronized values
 let hqTelemetry: HQTelemetry = {
   shopify: {
-    grossRevenuePEN: 12450.0,
-    netProfitPEN: 6750.0,
-    totalOrdersToday: 142,
-    confirmedOrdersToday: 132,
-    deliveredCount: 98,
-    pendingCount: 44,
-    codSuccessRate: 92.4,
+    grossRevenuePEN: 0.0,
+    netProfitPEN: 0.0,
+    totalOrdersToday: 0,
+    confirmedOrdersToday: 0,
+    deliveredCount: 0,
+    pendingCount: 0,
+    codSuccessRate: 0.0,
     activeSKUs: 12,
     storeUrl: '8bhsfq-gz.myshopify.com',
     dropiAccount: '132455'
@@ -163,28 +163,28 @@ let hqActivities: HQActivity[] = [
     id: 'act-2',
     agentName: 'VYRA',
     agentHexColor: '#f43f5e',
-    message: 'Optimizando pauta de TikTok Ads en Lima con ganchos de 3s para TurboJet. S/. 12,450 en ventas.',
+    message: 'Estructura de campaña TikTok Ads CBO lista para Lima. Esperando activación de pauta.',
     timestamp: '2m ago'
   },
   {
     id: 'act-3',
     agentName: 'MAX',
     agentHexColor: '#3b82f6',
-    message: 'Latencia del checkout optimizada a 0.78s en Turbopack con 88% de conversión en iPhone.',
+    message: 'Latencia del checkout optimizada a 0.78s en Turbopack con formulario 1-click contra entrega.',
     timestamp: '3m ago'
   },
   {
     id: 'act-4',
     agentName: 'SOFIA',
     agentHexColor: '#10b981',
-    message: '142 pedidos contra entrega confirmados por WhatsApp con Olva Courier y Shalom.',
+    message: 'Canal de WhatsApp +51 verificado. Lista para confirmar las primeras órdenes contra entrega.',
     timestamp: '5m ago'
   },
   {
     id: 'act-5',
     agentName: 'NEX',
     agentHexColor: '#14b8a6',
-    message: 'Ganancia neta real de hoy: S/. 6,750.00 PEN limpios (margen neto 54.2%).',
+    message: 'Márgenes de Dropi auditados (~54% neto). Registro contable listo para la primera venta.',
     timestamp: '8m ago'
   }
 ];
@@ -270,7 +270,7 @@ let hqAgents: HQAgentState[] = [
     clearance: 'NIVEL 3',
     hexColor: '#10b981',
     status: 'online',
-    speechBubble: '142 chats de WhatsApp confirmados para entrega con Olva Courier.',
+    speechBubble: 'Canal de WhatsApp +51 listo para confirmar los primeros pedidos.',
     energy: 95,
     focus: 92,
     mood: 'Customer Care 😊',
@@ -284,7 +284,7 @@ let hqAgents: HQAgentState[] = [
     clearance: 'NIVEL 5',
     hexColor: '#14b8a6',
     status: 'working',
-    speechBubble: 'Margen neto real en Soles: 54.2% (S/. 6,750 limpios de flete Dropi).',
+    speechBubble: 'Márgenes de Dropi auditados en 54%. Listos para registrar la primera venta.',
     energy: 93,
     focus: 95,
     mood: 'Audited 📊',
@@ -298,7 +298,7 @@ let hqAgents: HQAgentState[] = [
     clearance: 'NIVEL 4',
     hexColor: '#eab308',
     status: 'working',
-    speechBubble: '33.3% de compradores eligen el upsell de Estuche EVA (+S/. 25).',
+    speechBubble: 'Funnel de ventas y upsell (+S/. 25) listos en el checkout de la tienda.',
     energy: 90,
     focus: 93,
     mood: 'Sales Closer 🎯',
@@ -312,7 +312,7 @@ let hqAgents: HQAgentState[] = [
     clearance: 'NIVEL 4',
     hexColor: '#f97316',
     status: 'working',
-    speechBubble: 'Stock en almacén Callao: 850 TurboJets. Guías Olva y Shalom listas.',
+    speechBubble: 'Almacén Callao con stock listo. Guías Olva y Shalom preparadas.',
     energy: 92,
     focus: 96,
     mood: 'Logistics Master 📦',

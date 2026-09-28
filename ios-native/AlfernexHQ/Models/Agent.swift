@@ -179,7 +179,7 @@ public struct AgentData {
             clearance: "NIVEL 3",
             hexColor: "#10b981",
             status: .online,
-            speechBubble: "142 chats de WhatsApp confirmados para entrega con Olva Courier.",
+            speechBubble: "Canal de WhatsApp +51 listo para confirmar los primeros pedidos.",
             simStats: SimStats(energy: 95, focus: 92, mood: "Customer Care 😊"),
             aiModel: "Gemini 3.8 Flash",
             modelProvider: "Google Gemini"
@@ -192,7 +192,7 @@ public struct AgentData {
             clearance: "NIVEL 5",
             hexColor: "#14b8a6",
             status: .working,
-            speechBubble: "Margen neto real en Soles: 54.2% (S/. 6,750 limpios de flete Dropi).",
+            speechBubble: "Márgenes de Dropi auditados en 54%. Listos para registrar la primera venta.",
             simStats: SimStats(energy: 93, focus: 95, mood: "Audited 📊"),
             aiModel: "Gemini 3.8 Flash",
             modelProvider: "Google Gemini"
@@ -205,7 +205,7 @@ public struct AgentData {
             clearance: "NIVEL 4",
             hexColor: "#eab308",
             status: .working,
-            speechBubble: "33.3% de compradores eligen el upsell de Estuche EVA (+S/. 25).",
+            speechBubble: "Funnel de ventas y upsell (+S/. 25) listos en el checkout de la tienda.",
             simStats: SimStats(energy: 90, focus: 93, mood: "Sales Closer 🎯"),
             aiModel: "Gemini 3.8 Flash",
             modelProvider: "Google Gemini"
@@ -218,7 +218,7 @@ public struct AgentData {
             clearance: "NIVEL 4",
             hexColor: "#f97316",
             status: .working,
-            speechBubble: "Stock en almacén Callao: 850 TurboJets. Guías Olva y Shalom listas.",
+            speechBubble: "Almacén Callao con stock listo. Guías Olva y Shalom preparadas.",
             simStats: SimStats(energy: 92, focus: 96, mood: "Logistics Master 📦"),
             aiModel: "Gemini 3.8 Flash",
             modelProvider: "Google Gemini"

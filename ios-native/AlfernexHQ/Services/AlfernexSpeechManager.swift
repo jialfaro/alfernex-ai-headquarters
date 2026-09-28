@@ -218,15 +218,15 @@ public class AlfernexSpeechManager: NSObject, ObservableObject, AVSpeechSynthesi
         // 2. VYRA (Marketing TikTok Ads - Gemini 3.8 Flash)
         if agent.id == "vyra-growth" {
             if q.contains("escalar") || q.contains("10,000") || q.contains("soles") || q.contains("meta") {
-                return "Para escalar a S/. 10,000 al día en Shopify, Gemini 3.8 Flash ha estructurado 5 nuevos ad sets en TikTok Ads con CBO a S/. 200 cada uno y creativos de 3s para Lima y provincias."
+                return "Para alcanzar los primeros S/. 10,000 en ventas, Gemini 3.8 Flash ha estructurado 5 ad sets en TikTok Ads con CBO a S/. 200 cada uno y creativos de 3s para Lima y provincias."
             }
             if q.contains("gancho") || q.contains("hook") || q.contains("creativo") || q.contains("video") {
                 return "Aquí tienes los 3 ganchos virales listos: 1. 'Si vives en Perú y aún limpias así, estás perdiendo el tiempo'. 2. 'El gadget de S/. 89 que agotó stock en Lima en 48 horas'. 3. 'Prueba pagar en la puerta de tu casa con envío gratis hoy'."
             }
             if q.contains("cpa") || q.contains("costo") || q.contains("roas") {
-                return "El CPA actual en TikTok Ads está en S/. 14.80 por pedido confirmado, con un ROAS de 4.8x. Llevamos S/. 12,450 en ventas brutas hoy con 142 órdenes contra entrega."
+                return "El target de CPA para TikTok Ads en Perú es menor a S/. 18 por pedido contra entrega. Tenemos el catálogo de 8bhsfq-gz.myshopify.com optimizado para iniciar la pauta."
             }
-            return "Alexis, VYRA reportando con Gemini 3.8 Flash. La campaña de TikTok Ads para el TurboJet está convirtiendo con fuerza en Lima. ¿Lanzamos el nuevo lote de creativos o subimos el presupuesto?"
+            return "Alexis, VYRA reportando con Gemini 3.8 Flash. Al momento registramos S/. 0.00 PEN en ventas (0 órdenes). Toda la pauta y los creativos están listos en Lima para captar los primeros compradores. ¿Activamos los anuncios ahora?"
         }
         
         // 3. MAX (Lead Engineer & Tech - Gemini 3.8 Flash)
@@ -244,27 +244,27 @@ public class AlfernexSpeechManager: NSObject, ObservableObject, AVSpeechSynthesi
         
         // 5. NOVA (AI Lead Researcher - Gemini 3.8 Flash)
         if agent.id == "nova-research" {
-            return "NOVA en línea. Análisis de tendencias con Gemini 3.8 Flash: El TurboJet a 130K RPM y el Proyector 4K dominan el mercado peruano con margen neto superior al 54.2%."
+            return "NOVA en línea. Análisis de tendencias con Gemini 3.8 Flash: Los sopladores portátiles de 130K RPM y los cargadores 3 en 1 ofrecen el mayor margen neto en Perú (~54.2% libre de flete)."
         }
         
         // 6. SOFIA (WhatsApp Customer Experience - Gemini 3.8 Flash)
         if agent.id == "sofia-support" {
-            return "SOFIA a tus órdenes. 142 pedidos validados por WhatsApp hoy. Confirmamos billete exacto o Yape/Plin antes de que Olva Courier salga a ruta, garantizando 92.4% de entregas exitosas."
+            return "SOFIA a tus órdenes. Canal de WhatsApp verificado y listo. En cuanto ingrese la primera orden en la tienda, validaremos celular y dirección antes de que Olva Courier salga a ruta."
         }
         
         // 7. NEX (CFO & Gross Margin Analyst - Gemini 3.8 Flash)
         if agent.id == "nex-data" {
-            return "Alexis, números reales: Facturación total S/. 12,450.00 PEN en 142 órdenes, con ganancia neta en el bolsillo de S/. 6,750.00 PEN tras fletes y COGS de Dropi. Margen neto: 54.2%."
+            return "Alexis, números reales: Facturación bruta actual de S/. 0.00 PEN (0 órdenes registradas). Los márgenes unitarios de Dropi están auditados para dejar ~54.2% de utilidad neta en cada venta. Listos para contabilizar la primera orden."
         }
         
         // 8. EVA (High-Ticket Sales Closer - Gemini 3.8 Flash)
         if agent.id == "eva-sales" {
-            return "EVA reportando. El upsell del Estuche Rígido EVA Antigolpes (+S/. 25 PEN) mantiene un 33.3% de aceptación en el checkout, elevando el ticket promedio a S/. 185 PEN."
+            return "EVA reportando. El embudo de ventas y el upsell del Estuche Rígido (+S/. 25 PEN) están activos en el checkout de la tienda. Todo configurado para maximizar el ticket en la primera venta."
         }
         
         // 9. ATLAS (Logistics & Supply Chain - Gemini 3.8 Flash)
         if agent.id == "atlas-ops" {
-            return "ATLAS en línea. Almacén Callao con 850 unidades de TurboJet disponibles. 98 pedidos ya salieron con Olva Courier y 44 ruteados a Shalom para provincias. Cero demoras."
+            return "ATLAS en línea. Almacén central de Callao con stock listo. Apenas ingrese la primera orden, emitiremos la guía de Olva Courier o Shalom en menos de 2 horas."
         }
         
         // 10. ORION (Cybersecurity & Anti-Fraud - Gemini 3.8 Flash)

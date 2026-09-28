@@ -75,13 +75,13 @@ public struct DashboardView: View {
                                 .foregroundColor(.green)
                         }
                         
-                        Text("S/. \(Int(vm.shopifyTelemetry.grossRevenuePEN))")
+                        Text(String(format: "S/. %.2f", vm.shopifyTelemetry.grossRevenuePEN))
                             .font(.system(size: 20, weight: .black, design: .monospaced))
                             .foregroundColor(.white)
                         
-                        Text("Neto: S/. \(Int(vm.shopifyTelemetry.netProfitPEN)) • \(vm.shopifyTelemetry.totalOrdersToday) órdenes")
+                        Text(vm.shopifyTelemetry.totalOrdersToday > 0 ? "Neto: S/. \(Int(vm.shopifyTelemetry.netProfitPEN)) • \(vm.shopifyTelemetry.totalOrdersToday) órdenes" : "Sin ventas aún • 0 órdenes")
                             .font(.system(size: 9.5, weight: .medium, design: .monospaced))
-                            .foregroundColor(.green.opacity(0.9))
+                            .foregroundColor(vm.shopifyTelemetry.totalOrdersToday > 0 ? .green.opacity(0.9) : .gray)
                         
                         Text("Dropi Perú ID: \(vm.shopifyTelemetry.dropiAccount)")
                             .font(.system(size: 8.5, weight: .bold, design: .monospaced))

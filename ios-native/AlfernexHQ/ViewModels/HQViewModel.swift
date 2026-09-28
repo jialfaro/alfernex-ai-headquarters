@@ -36,10 +36,10 @@ public class HQViewModel: ObservableObject {
     // Live Stream matching web exactly
     @Published public var liveActivities: [LiveActivityItem] = [
         LiveActivityItem(id: "1", agentName: "TRADIUM", agentHexColor: "#10b981", message: "Take profit ejecutado en ETH-PERP (+2.0%). Compounding del 50% transferido a USDC.", timestamp: "1m ago"),
-        LiveActivityItem(id: "2", agentName: "VYRA", agentHexColor: "#f43f5e", message: "Optimizando pauta de TikTok Ads en Lima con ganchos de 3s para TurboJet. S/. 12,450 en ventas.", timestamp: "2m ago"),
-        LiveActivityItem(id: "3", agentName: "MAX", agentHexColor: "#3b82f6", message: "Latencia del checkout móvil optimizada a 0.78s en Turbopack con 88% de conversión.", timestamp: "3m ago"),
-        LiveActivityItem(id: "4", agentName: "SOFIA", agentHexColor: "#10b981", message: "142 pedidos contra entrega confirmados por WhatsApp con Olva Courier y Shalom.", timestamp: "5m ago"),
-        LiveActivityItem(id: "5", agentName: "NEX", agentHexColor: "#14b8a6", message: "Ganancia neta real de hoy: S/. 6,750.00 PEN limpios (margen neto 54.2%).", timestamp: "8m ago")
+        LiveActivityItem(id: "2", agentName: "VYRA", agentHexColor: "#f43f5e", message: "Estructura de campaña TikTok Ads CBO lista para Lima. Esperando activación de pauta.", timestamp: "2m ago"),
+        LiveActivityItem(id: "3", agentName: "MAX", agentHexColor: "#3b82f6", message: "Latencia del checkout optimizada a 0.78s con formulario 1-click contra entrega.", timestamp: "3m ago"),
+        LiveActivityItem(id: "4", agentName: "SOFIA", agentHexColor: "#10b981", message: "Canal de WhatsApp +51 verificado. Lista para confirmar las primeras órdenes contra entrega.", timestamp: "5m ago"),
+        LiveActivityItem(id: "5", agentName: "NEX", agentHexColor: "#14b8a6", message: "Márgenes de Dropi auditados (~54% neto). Registro contable listo para la primera venta.", timestamp: "8m ago")
     ]
     
     private var syncTimer: Timer?
@@ -82,11 +82,11 @@ public class HQViewModel: ObservableObject {
             
             // 1. Sync Shopify Telemetry
             self.shopifyTelemetry.grossRevenuePEN = response.telemetry.shopify.grossRevenuePEN
-            self.shopifyTelemetry.netProfitPEN = response.telemetry.shopify.netProfitPEN ?? 6750.0
+            self.shopifyTelemetry.netProfitPEN = response.telemetry.shopify.netProfitPEN ?? 0.0
             self.shopifyTelemetry.totalOrdersToday = response.telemetry.shopify.totalOrdersToday
-            self.shopifyTelemetry.confirmedOrdersToday = response.telemetry.shopify.confirmedOrdersToday ?? 132
-            self.shopifyTelemetry.deliveredCount = response.telemetry.shopify.deliveredCount ?? 98
-            self.shopifyTelemetry.pendingCount = response.telemetry.shopify.pendingCount ?? 44
+            self.shopifyTelemetry.confirmedOrdersToday = response.telemetry.shopify.confirmedOrdersToday ?? 0
+            self.shopifyTelemetry.deliveredCount = response.telemetry.shopify.deliveredCount ?? 0
+            self.shopifyTelemetry.pendingCount = response.telemetry.shopify.pendingCount ?? 0
             self.shopifyTelemetry.codSuccessRate = response.telemetry.shopify.codSuccessRate
             self.shopifyTelemetry.activeSKUs = response.telemetry.shopify.activeSKUs
             if let storeUrl = response.telemetry.shopify.storeUrl {
