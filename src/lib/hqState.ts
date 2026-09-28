@@ -390,8 +390,8 @@ export function broadcastNewDirective(data: {
   return { success: true, directive: newDir, activities: hqActivities };
 }
 
-export async function processHQChat(agentId: string, message: string) {
-  const geminiResponse = await generateGeminiAgentResponse(agentId, message);
+export async function processHQChat(agentId: string, message: string, apiKey?: string) {
+  const geminiResponse = await generateGeminiAgentResponse(agentId, message, apiKey);
   const agent = hqAgents.find((a) => a.id === agentId) || hqAgents[0];
 
   // Update agent bubble

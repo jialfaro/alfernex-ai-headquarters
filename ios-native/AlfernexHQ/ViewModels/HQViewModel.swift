@@ -20,6 +20,7 @@ public class HQViewModel: ObservableObject {
     
     // Chat Modal State
     @Published public var isChatSheetPresented: Bool = false
+    @Published public var isAiSettingsPresented: Bool = false
     @Published public var chattingAgent: Agent? = nil
     @Published public var chatMessages: [String: [ChatMessageItem]] = [:]
     
@@ -210,8 +211,9 @@ public class HQViewModel: ObservableObject {
         var currentChat = self.chatMessages[agent.id] ?? []
         currentChat.append(ChatMessageItem(sender: "user", senderName: "Alexis", text: clean, agentId: agent.id))
         
-        // Generate AI Agent Response (from Vercel API with Gemini 3.8 Flash or local engine)
-        Task {
+        // Generate AI Agent Response (from Vercel API with Gemini 3.8 Flash or direct Gemini API)
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
             let vercelResponse = await AlfernexAPIService.shared.sendChatMessage(agentId: agent.id, message: clean)
             let response = vercelResponse?.reply ?? AlfernexSpeechManager.shared.generateResponse(for: agent, query: clean)
             
@@ -273,8 +275,9 @@ public class HQViewModel: ObservableObject {
         currentMsgs.append(userMsg)
         self.chatMessages[agent.id] = currentMsgs
         
-        // Asynchronously call Vercel API and speak response
-        Task {
+        // Asynchronously call Vercel API / direct Gemini and speak response
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
             let vercelRes = await AlfernexAPIService.shared.sendChatMessage(agentId: agent.id, message: text)
             let replyText = vercelRes?.reply ?? AlfernexSpeechManager.shared.generateResponse(for: agent, query: text)
             

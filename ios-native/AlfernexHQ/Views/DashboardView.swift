@@ -32,30 +32,50 @@ public struct DashboardView: View {
                     
                     Spacer()
                     
-                    Button {
-                        Task {
-                            await vm.syncWithVercel()
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            if vm.isSyncingWithVercel {
-                                ProgressView()
-                                    .scaleEffect(0.6)
-                                    .tint(.green)
-                            } else {
+                    HStack(spacing: 6) {
+                        Button {
+                            vm.isAiSettingsPresented = true
+                        } label: {
+                            HStack(spacing: 4) {
                                 Circle()
-                                    .fill(vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange)
+                                    .fill(Color.cyan)
                                     .frame(width: 6, height: 6)
+                                Text("GEMINI 3.8")
+                                    .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                                    .foregroundColor(.cyan)
                             }
-                            Text(vm.syncStatusText)
-                                .font(.system(size: 8.5, weight: .black, design: .monospaced))
-                                .foregroundColor(vm.syncStatusText == "VERCEL SYNCED" ? .green : .orange)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 4)
+                            .background(Color.cyan.opacity(0.12))
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cyan.opacity(0.3), lineWidth: 1))
                         }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.12))
-                        .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.3), lineWidth: 1))
+                        
+                        Button {
+                            Task {
+                                await vm.syncWithVercel()
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                if vm.isSyncingWithVercel {
+                                    ProgressView()
+                                        .scaleEffect(0.6)
+                                        .tint(.green)
+                                } else {
+                                    Circle()
+                                        .fill(vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange)
+                                        .frame(width: 6, height: 6)
+                                }
+                                Text(vm.syncStatusText)
+                                    .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                                    .foregroundColor(vm.syncStatusText == "VERCEL SYNCED" ? .green : .orange)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.12))
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke((vm.syncStatusText == "VERCEL SYNCED" ? Color.green : Color.orange).opacity(0.3), lineWidth: 1))
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -304,6 +324,9 @@ public struct DashboardView: View {
             }
         } message: {
             Text("Esta orden se sincronizará inmediatamente con el cuartel general en Vercel y todos los 11 agentes de IA la ejecutarán.")
+        }
+        .sheet(isPresented: $vm.isAiSettingsPresented) {
+            GeminiNeuralStatusSheet()
         }
     }
 }
