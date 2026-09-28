@@ -40,6 +40,8 @@ public struct Agent: Identifiable, Codable {
     public var status: AgentStatus
     public var speechBubble: String
     public var simStats: SimStats
+    public var aiModel: String
+    public var modelProvider: String
     public var isSpecial: Bool
     
     public var color: Color {
@@ -56,6 +58,8 @@ public struct Agent: Identifiable, Codable {
         status: AgentStatus = .working,
         speechBubble: String,
         simStats: SimStats = SimStats(),
+        aiModel: String = "Gemini 3.8 Flash",
+        modelProvider: String = "Google Gemini",
         isSpecial: Bool = false
     ) {
         self.id = id
@@ -67,6 +71,8 @@ public struct Agent: Identifiable, Codable {
         self.status = status
         self.speechBubble = speechBubble
         self.simStats = simStats
+        self.aiModel = aiModel
+        self.modelProvider = modelProvider
         self.isSpecial = isSpecial
     }
 }
@@ -102,124 +108,146 @@ public struct AgentData {
         Agent(
             id: "tradium-trading",
             name: "TRADIUM",
-            role: "Hyperliquid Quant Trading • Live PnL",
+            role: "Head of Algorithmic Trading & Quant Finance",
             department: "Trading & Finanzas",
             clearance: "NIVEL 5 (ALPHA)",
             hexColor: "#10b981",
             status: .trading,
             speechBubble: "ETH-PERP Take Profit ejecutado (+2.0%). Compounding al 50% activo.",
             simStats: SimStats(energy: 98, focus: 99, mood: "Hyperliquid Arbitrage ⚡"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini",
             isSpecial: true
         ),
         Agent(
             id: "vyra-growth",
             name: "VYRA",
-            role: "TikTok Ads & Viral Marketing Manager",
+            role: "AI Growth Strategist & TikTok Ads Manager",
             department: "Marketing",
             clearance: "NIVEL 4",
             hexColor: "#f43f5e",
             status: .working,
             speechBubble: "Optimizando ganchos de 3s para TurboJet en Lima. CTR subiendo a 4.9%.",
-            simStats: SimStats(energy: 92, focus: 94, mood: "Viral Creative 🚀")
+            simStats: SimStats(energy: 94, focus: 96, mood: "Viral Creative 🚀"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         ),
         Agent(
             id: "max-developer",
             name: "MAX",
-            role: "Lead Software & Core Systems Engineer",
+            role: "AI Lead Software & Core Systems Engineer",
             department: "Tecnología",
             clearance: "NIVEL 5",
             hexColor: "#3b82f6",
             status: .working,
-            speechBubble: "Optimizando latencia del checkout móvil a 0.8s en Next.js Turbopack.",
-            simStats: SimStats(energy: 94, focus: 96, mood: "Building 💻")
-        ),
-        Agent(
-            id: "echo-sales",
-            name: "ECHO",
-            role: "Dropi Perú Sales & Logistics Dispatcher",
-            department: "Ventas",
-            clearance: "NIVEL 4",
-            hexColor: "#10b981",
-            status: .working,
-            speechBubble: "142 pedidos confirmados contra entrega con Olva Courier.",
-            simStats: SimStats(energy: 90, focus: 91, mood: "Sales Closer 🎯")
-        ),
-        Agent(
-            id: "sol-support",
-            name: "SOL",
-            role: "WhatsApp AI CRM & Customer Support",
-            department: "Atención al Cliente",
-            clearance: "NIVEL 3",
-            hexColor: "#eab308",
-            status: .online,
-            speechBubble: "28 chats activos en WhatsApp. Tiempo de respuesta medio: 1.2 segundos.",
-            simStats: SimStats(energy: 95, focus: 89, mood: "Friendly 😊")
-        ),
-        Agent(
-            id: "atlas-ops",
-            name: "ATLAS",
-            role: "Supply Chain & Fulfillment Supervisor",
-            department: "Operaciones",
-            clearance: "NIVEL 4",
-            hexColor: "#f97316",
-            status: .working,
-            speechBubble: "Stock en almacén de Lima: 850 unidades de TurboJet listas para despacho.",
-            simStats: SimStats(energy: 88, focus: 95, mood: "Logistics Master 📦")
+            speechBubble: "Latencia del checkout móvil optimizada a 0.78s en Next.js Turbopack.",
+            simStats: SimStats(energy: 96, focus: 98, mood: "Building 💻"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         ),
         Agent(
             id: "alex-architect",
             name: "ALEX",
-            role: "Cloud & Microservices Architect",
+            role: "Cloud Solutions & Microservices Architect",
             department: "Infraestructura",
             clearance: "NIVEL 5",
-            hexColor: "#06b6d4",
+            hexColor: "#38bdf8",
             status: .working,
-            speechBubble: "Topología C4 en Kubernetes sincronizada con webhooks de Shopify y Dropi.",
-            simStats: SimStats(energy: 91, focus: 97, mood: "Architecting 🏛️")
+            speechBubble: "Webhooks Shopify ↔ Dropi Perú (ID: 132455) sincronizados a 38ms.",
+            simStats: SimStats(energy: 92, focus: 97, mood: "Architecting 🏛️"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         ),
         Agent(
             id: "nova-research",
             name: "NOVA",
-            role: "LLM Reasoning & Tech Trends Researcher",
+            role: "AI Research & Product Intelligence",
             department: "Investigación",
             clearance: "NIVEL 4",
-            hexColor: "#8b5cf6",
+            hexColor: "#a855f7",
             status: .thinking,
-            speechBubble: "Analizando papers de arXiv sobre compresión de modelos y benchmarks e-commerce.",
-            simStats: SimStats(energy: 87, focus: 98, mood: "Deep Thinker 🔬")
+            speechBubble: "Analizando tendencias virales de gadgets e-commerce con Gemini 3.8 Flash.",
+            simStats: SimStats(energy: 91, focus: 98, mood: "Deep Thinker 🔬"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
+        ),
+        Agent(
+            id: "sofia-support",
+            name: "SOFIA",
+            role: "Customer Happiness & WhatsApp AI Support",
+            department: "Atención al Cliente",
+            clearance: "NIVEL 3",
+            hexColor: "#10b981",
+            status: .online,
+            speechBubble: "142 chats de WhatsApp confirmados para entrega con Olva Courier.",
+            simStats: SimStats(energy: 95, focus: 92, mood: "Customer Care 😊"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         ),
         Agent(
             id: "nex-data",
             name: "NEX",
-            role: "P&L Financial & Gross Margin Analyst",
+            role: "Chief Financial Officer & Gross Margin Analyst",
             department: "Finanzas",
             clearance: "NIVEL 5",
-            hexColor: "#059669",
+            hexColor: "#14b8a6",
             status: .working,
-            speechBubble: "Margen neto promedio en Soles: 54.2% tras flete Dropi y costo de producto.",
-            simStats: SimStats(energy: 93, focus: 94, mood: "Audited 📊")
+            speechBubble: "Margen neto real en Soles: 54.2% (S/. 6,750 limpios de flete Dropi).",
+            simStats: SimStats(energy: 93, focus: 95, mood: "Audited 📊"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         ),
         Agent(
-            id: "maya-creative",
-            name: "MAYA",
-            role: "3D Blender & Viral Visual Content Creator",
+            id: "eva-sales",
+            name: "EVA",
+            role: "Head of Sales & Conversion Closer",
+            department: "Ventas",
+            clearance: "NIVEL 4",
+            hexColor: "#eab308",
+            status: .working,
+            speechBubble: "33.3% de compradores eligen el upsell de Estuche EVA (+S/. 25).",
+            simStats: SimStats(energy: 90, focus: 93, mood: "Sales Closer 🎯"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
+        ),
+        Agent(
+            id: "atlas-ops",
+            name: "ATLAS",
+            role: "Head of Logistics & Supply Chain Supervisor",
+            department: "Operaciones",
+            clearance: "NIVEL 4",
+            hexColor: "#f97316",
+            status: .working,
+            speechBubble: "Stock en almacén Callao: 850 TurboJets. Guías Olva y Shalom listas.",
+            simStats: SimStats(energy: 92, focus: 96, mood: "Logistics Master 📦"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
+        ),
+        Agent(
+            id: "orion-security",
+            name: "ORION",
+            role: "Zero-Trust Cybersecurity & Anti-Fraud Lead",
+            department: "Seguridad",
+            clearance: "NIVEL 5 (DEFCON 1)",
+            hexColor: "#06b6d4",
+            status: .online,
+            speechBubble: "Filtro regex (+51 9XXXXXXXX) verificó 100% de pedidos. 0 fraudes.",
+            simStats: SimStats(energy: 99, focus: 100, mood: "Shield Active 🛡️"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
+        ),
+        Agent(
+            id: "mia-creative",
+            name: "MIA",
+            role: "Lead 3D & Viral Visual Content Creator",
             department: "Creativo",
             clearance: "NIVEL 3",
             hexColor: "#ec4899",
             status: .working,
-            speechBubble: "8 videos verticales en 4K listos para pauta publicitaria en TikTok e Instagram.",
-            simStats: SimStats(energy: 90, focus: 92, mood: "Artistic 🎨")
-        ),
-        Agent(
-            id: "cipher-security",
-            name: "CIPHER",
-            role: "Zero Trust Firewall & Cybersecurity Lead",
-            department: "Seguridad",
-            clearance: "NIVEL 5 (DEFCON 1)",
-            hexColor: "#6366f1",
-            status: .online,
-            speechBubble: "Bóveda cuántica y cortafuegos en tasa de 10 Gbps. 0 amenazas detectadas.",
-            simStats: SimStats(energy: 99, focus: 100, mood: "Shield Active 🛡️")
+            speechBubble: "8 videos 4K raytraced listos para pauta en TikTok e Instagram.",
+            simStats: SimStats(energy: 93, focus: 94, mood: "Artistic 🎨"),
+            aiModel: "Gemini 3.8 Flash",
+            modelProvider: "Google Gemini"
         )
     ]
 }

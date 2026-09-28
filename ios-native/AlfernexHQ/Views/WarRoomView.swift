@@ -12,24 +12,38 @@ public struct WarRoomView: View {
                         Text("WAR ROOM EJECUTIVO")
                             .font(.system(size: 16, weight: .black, design: .monospaced))
                             .foregroundColor(.white)
-                        Text("Monitoreo en vivo de Ventas y Trading Cuantitativo")
+                        Text("Métricas Reales • E-Commerce & Quant Trading")
                             .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.gray)
                     }
                     Spacer()
+                    
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(Color.green)
+                            .frame(width: 6, height: 6)
+                        Text("GEMINI 3.8 FLASH")
+                            .font(.system(size: 8, weight: .black, design: .monospaced))
+                            .foregroundColor(.cyan)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.cyan.opacity(0.12))
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cyan.opacity(0.3), lineWidth: 1))
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
                 
-                // TRADIUM SECTION
+                // TRADIUM SECTION (Hyperliquid Quant)
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Label("TRADIUM • HYPERLIQUID QUANT", systemImage: "chart.line.uptrend.xyaxis")
                             .font(.system(size: 11, weight: .black, design: .monospaced))
                             .foregroundColor(.mint)
                         Spacer()
-                        Text("LIVE PnL")
-                            .font(.system(size: 9, weight: .black, design: .monospaced))
+                        Text("LIVE DEX")
+                            .font(.system(size: 8.5, weight: .black, design: .monospaced))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(Color.mint.opacity(0.2))
@@ -37,18 +51,32 @@ public struct WarRoomView: View {
                             .cornerRadius(4)
                     }
                     
-                    Text("Cartera en Gestión: $\(Int(vm.tradingTelemetry.equityUSDC)) USD")
-                        .font(.system(size: 18, weight: .black, design: .monospaced))
-                        .foregroundColor(.white)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("CARTERA EN GESTIÓN")
+                            .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                            .foregroundColor(.gray)
+                        HStack(alignment: .lastTextBaseline, spacing: 8) {
+                            Text("$\(String(format: "%.2f", vm.tradingTelemetry.equityUSDC))")
+                                .font(.system(size: 22, weight: .black, design: .monospaced))
+                                .foregroundColor(.white)
+                            Text("USDC")
+                                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                                .foregroundColor(.mint)
+                            Spacer()
+                            Text("+$\(String(format: "%.2f", vm.tradingTelemetry.todayPnLUSDC)) (+\(String(format: "%.2f", vm.tradingTelemetry.todayPnLPct))%)")
+                                .font(.system(size: 11, weight: .black, design: .monospaced))
+                                .foregroundColor(.green)
+                        }
+                    }
                     
                     // Grid stats
                     HStack(spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("WIN RATE")
-                                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                 .foregroundColor(.gray)
                             Text("\(String(format: "%.1f", vm.tradingTelemetry.winRatePct))%")
-                                .font(.system(size: 14, weight: .black, design: .monospaced))
+                                .font(.system(size: 13, weight: .black, design: .monospaced))
                                 .foregroundColor(.green)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -58,10 +86,10 @@ public struct WarRoomView: View {
                         
                         VStack(alignment: .leading, spacing: 2) {
                             Text("SHARPE")
-                                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                 .foregroundColor(.gray)
                             Text("\(String(format: "%.2f", vm.tradingTelemetry.sharpeRatio))")
-                                .font(.system(size: 14, weight: .black, design: .monospaced))
+                                .font(.system(size: 13, weight: .black, design: .monospaced))
                                 .foregroundColor(.cyan)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -70,11 +98,11 @@ public struct WarRoomView: View {
                         .cornerRadius(10)
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("RETORNO")
-                                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            Text("COMPOUNDING")
+                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                 .foregroundColor(.gray)
-                            Text("+\(String(format: "%.1f", vm.tradingTelemetry.monthlyReturnPct))%")
-                                .font(.system(size: 14, weight: .black, design: .monospaced))
+                            Text("50% (S/. $\(Int(vm.tradingTelemetry.compoundingPoolUSDC)))")
+                                .font(.system(size: 11, weight: .black, design: .monospaced))
                                 .foregroundColor(.mint)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,27 +113,17 @@ public struct WarRoomView: View {
                     
                     // Active pairs
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("POSICIONES ABIERTAS:")
-                            .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                        Text("EJECUCIÓN ALGORÍTMICA ACTIVA:")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
                             .foregroundColor(.gray)
                         
                         HStack {
-                            Text("LONG ETH-PERP")
+                            Text(vm.tradingTelemetry.activePair)
                                 .font(.system(size: 11, weight: .bold, design: .monospaced))
                                 .foregroundColor(.white)
                             Spacer()
-                            Text("+$1,420.50 (+3.8%)")
-                                .font(.system(size: 11, weight: .black, design: .monospaced))
-                                .foregroundColor(.green)
-                        }
-                        
-                        HStack {
-                            Text("LONG SOL-PERP")
-                                .font(.system(size: 11, weight: .bold, design: .monospaced))
-                                .foregroundColor(.white)
-                            Spacer()
-                            Text("+$840.20 (+4.9%)")
-                                .font(.system(size: 11, weight: .black, design: .monospaced))
+                            Text("Take Profit +\(String(format: "%.1f", vm.tradingTelemetry.takeProfitPct))%")
+                                .font(.system(size: 10, weight: .black, design: .monospaced))
                                 .foregroundColor(.green)
                         }
                     }
@@ -119,25 +137,53 @@ public struct WarRoomView: View {
                 .overlay(RoundedRectangle(cornerRadius: 24).stroke(Color.mint.opacity(0.3), lineWidth: 1))
                 .padding(.horizontal)
                 
-                // SHOPIFY COD SECTION
+                // SHOPIFY COD SECTION (Dropi Perú)
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Label("DROPI PERÚ & SHOPIFY COD", systemImage: "shippingbox.fill")
                             .font(.system(size: 11, weight: .black, design: .monospaced))
                             .foregroundColor(.green)
                         Spacer()
-                        Text("LIMA & PROVINCIAS")
+                        Text("ID: \(vm.shopifyTelemetry.dropiAccount)")
                             .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundColor(.gray)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.2))
+                            .foregroundColor(.green)
+                            .cornerRadius(4)
                     }
                     
-                    Text("Ventas Brutas: S/. \(Int(vm.shopifyTelemetry.grossRevenuePEN)) PEN")
-                        .font(.system(size: 18, weight: .black, design: .monospaced))
-                        .foregroundColor(.white)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("TIENDA: \(vm.shopifyTelemetry.storeUrl)")
+                            .font(.system(size: 9.5, design: .monospaced))
+                            .foregroundColor(.gray)
+                        
+                        HStack(alignment: .lastTextBaseline, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("VENTAS BRUTAS")
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.gray)
+                                Text("S/. \(String(format: "%.2f", vm.shopifyTelemetry.grossRevenuePEN))")
+                                    .font(.system(size: 18, weight: .black, design: .monospaced))
+                                    .foregroundColor(.white)
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text("UTILIDAD NETA")
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.gray)
+                                Text("S/. \(String(format: "%.2f", vm.shopifyTelemetry.netProfitPEN))")
+                                    .font(.system(size: 18, weight: .black, design: .monospaced))
+                                    .foregroundColor(.green)
+                            }
+                        }
+                    }
                     
                     VStack(spacing: 8) {
                         HStack {
-                            Text("Efectividad Entrega:")
+                            Text("Efectividad de Entrega:")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.gray)
                             Spacer()
@@ -147,17 +193,17 @@ public struct WarRoomView: View {
                         }
                         
                         HStack {
-                            Text("Órdenes Despachadas:")
+                            Text("Órdenes:")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.gray)
                             Spacer()
-                            Text("\(vm.shopifyTelemetry.totalOrdersToday) hoy")
-                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                            Text("\(vm.shopifyTelemetry.totalOrdersToday) Totales (\(vm.shopifyTelemetry.confirmedOrdersToday) Conf. / \(vm.shopifyTelemetry.deliveredCount) Desp.)")
+                                .font(.system(size: 10.5, weight: .bold, design: .monospaced))
                                 .foregroundColor(.white)
                         }
                         
                         HStack {
-                            Text("Courier:")
+                            Text("Logística Couriers:")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.gray)
                             Spacer()

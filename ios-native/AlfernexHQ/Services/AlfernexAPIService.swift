@@ -4,21 +4,41 @@ import Foundation
 public struct HQTelemetryDTO: Codable {
     public let shopify: ShopifyDTO
     public let trading: TradingDTO
+    public let corporate: CorporateDTO?
     
     public struct ShopifyDTO: Codable {
         public let grossRevenuePEN: Double
+        public let netProfitPEN: Double?
         public let totalOrdersToday: Int
+        public let confirmedOrdersToday: Int?
+        public let deliveredCount: Int?
+        public let pendingCount: Int?
         public let codSuccessRate: Double
         public let activeSKUs: Int
+        public let storeUrl: String?
+        public let dropiAccount: String?
     }
     
     public struct TradingDTO: Codable {
         public let equityUSDC: Double
+        public let todayPnLUSDC: Double?
+        public let todayPnLPct: Double?
         public let monthlyReturnPct: Double
         public let winRatePct: Double
         public let sharpeRatio: Double
         public let activePair: String
         public let takeProfitPct: Double
+        public let consecutiveWins: Int?
+        public let compoundingPoolUSDC: Double?
+    }
+    
+    public struct CorporateDTO: Codable {
+        public let agentsOnline: Int?
+        public let activeTasks: Int?
+        public let completedToday: Int?
+        public let aiUtilization: Int?
+        public let aiModel: String?
+        public let systemStatus: String?
     }
 }
 
@@ -51,12 +71,14 @@ public struct HQAgentDTO: Codable, Identifiable {
     public let energy: Int
     public let focus: Int
     public let mood: String
+    public let aiModel: String?
     public let isSpecial: Bool?
 }
 
 public struct HQSyncResponse: Codable {
     public let success: Bool
     public let serverTime: String?
+    public let aiEngine: String?
     public let telemetry: HQTelemetryDTO
     public let directives: [CEODirectiveDTO]
     public let liveActivities: [LiveActivityItemDTO]
@@ -68,6 +90,8 @@ public struct HQChatResponse: Codable {
     public let agentId: String
     public let agentName: String
     public let reply: String
+    public let model: String?
+    public let provider: String?
     public let timestamp: String
 }
 

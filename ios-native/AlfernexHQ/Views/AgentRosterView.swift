@@ -5,7 +5,20 @@ public struct AgentRosterView: View {
     @State private var searchText: String = ""
     @State private var selectedDepartment: String = "TODOS"
     
-    let departments = ["TODOS", "Trading & Finanzas", "Marketing", "Tecnología", "Ventas", "Operaciones", "Seguridad"]
+    let departments = [
+        "TODOS",
+        "Trading & Finanzas",
+        "Marketing",
+        "Tecnología",
+        "Infraestructura",
+        "Investigación",
+        "Atención al Cliente",
+        "Finanzas",
+        "Ventas",
+        "Operaciones",
+        "Seguridad",
+        "Creativo"
+    ]
     
     var filteredAgents: [Agent] {
         vm.agents.filter { agent in
@@ -104,9 +117,21 @@ public struct AgentRosterView: View {
                                         .font(.system(size: 11.5, weight: .medium))
                                         .foregroundColor(.white.opacity(0.8))
                                     
-                                    Text("\(agent.department) • \(agent.clearance)")
-                                        .font(.system(size: 9.5, design: .monospaced))
-                                        .foregroundColor(.gray)
+                                    HStack(spacing: 6) {
+                                        Text("\(agent.department) • \(agent.clearance)")
+                                            .font(.system(size: 9.5, design: .monospaced))
+                                            .foregroundColor(.gray)
+                                        
+                                        Spacer()
+                                        
+                                        Text(agent.aiModel.uppercased())
+                                            .font(.system(size: 8, weight: .black, design: .monospaced))
+                                            .padding(.horizontal, 5)
+                                            .padding(.vertical, 2)
+                                            .background(Color.blue.opacity(0.2))
+                                            .foregroundColor(.cyan)
+                                            .cornerRadius(4)
+                                    }
                                 }
                             }
                             

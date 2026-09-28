@@ -79,9 +79,13 @@ public struct DashboardView: View {
                             .font(.system(size: 20, weight: .black, design: .monospaced))
                             .foregroundColor(.white)
                         
-                        Text("● Dropi COD • \(vm.shopifyTelemetry.totalOrdersToday) órdenes")
+                        Text("Neto: S/. \(Int(vm.shopifyTelemetry.netProfitPEN)) • \(vm.shopifyTelemetry.totalOrdersToday) órdenes")
                             .font(.system(size: 9.5, weight: .medium, design: .monospaced))
                             .foregroundColor(.green.opacity(0.9))
+                        
+                        Text("Dropi Perú ID: \(vm.shopifyTelemetry.dropiAccount)")
+                            .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                            .foregroundColor(.gray)
                     }
                     .padding(14)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -109,9 +113,13 @@ public struct DashboardView: View {
                             .font(.system(size: 20, weight: .black, design: .monospaced))
                             .foregroundColor(.white)
                         
-                        Text("+18.4% MoM • Sharpe 2.85")
+                        Text("PnL +$\(Int(vm.tradingTelemetry.todayPnLUSDC)) (+3.45%)")
                             .font(.system(size: 9.5, weight: .medium, design: .monospaced))
                             .foregroundColor(.cyan.opacity(0.9))
+                        
+                        Text("Sharpe 2.85 • Win Rate 68.4%")
+                            .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                            .foregroundColor(.gray)
                     }
                     .padding(14)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -223,11 +231,26 @@ public struct DashboardView: View {
                             .font(.system(size: 10.5, weight: .black, design: .monospaced))
                             .foregroundColor(.gray)
                         Spacer()
-                        HStack(spacing: 4) {
-                            Circle().fill(Color.green).frame(width: 6, height: 6)
-                            Text("11 AGENTES ONLINE")
-                                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                                .foregroundColor(.green)
+                        HStack(spacing: 6) {
+                            HStack(spacing: 3) {
+                                Image(systemName: "sparkles")
+                                    .foregroundColor(.purple)
+                                    .font(.system(size: 8))
+                                Text("GEMINI 3.8 FLASH")
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.purple)
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.purple.opacity(0.15))
+                            .cornerRadius(4)
+                            
+                            HStack(spacing: 4) {
+                                Circle().fill(Color.green).frame(width: 6, height: 6)
+                                Text("11 ONLINE")
+                                    .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.green)
+                            }
                         }
                     }
                     .padding(.horizontal)

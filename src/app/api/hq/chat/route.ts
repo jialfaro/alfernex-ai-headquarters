@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'agentId and message are required' }, { status: 400, headers: corsHeaders });
     }
 
-    const result = processHQChat(agentId, message);
+    const result = await processHQChat(agentId, message);
     return NextResponse.json(result, { status: 200, headers: corsHeaders });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Invalid request' }, { status: 500, headers: corsHeaders });
